@@ -67,6 +67,7 @@ class UserModel {
   final String category;
   final String role; // 'citizen', 'departmentAdmin', 'systemAdmin'
   final String status; // 'active', 'blocked'
+  final Map<String, dynamic> extraInformation; // Additional custom metadata map
   final Timestamp createdAt;
   final Timestamp updatedAt;
 
@@ -85,6 +86,7 @@ class UserModel {
     required this.category,
     required this.role,
     required this.status,
+    this.extraInformation = const {},
     required this.createdAt,
     required this.updatedAt,
   });
@@ -116,6 +118,11 @@ class UserModel {
       category: map['category'] ?? '',
       role: map['role'] ?? roleCitizen,
       status: map['status'] ?? statusActive,
+      extraInformation: (map['extraInformation'] ?? map['extrainformation']) is Map<String, dynamic>
+          ? Map<String, dynamic>.from(map['extraInformation'] ?? map['extrainformation'])
+          : ((map['extraInformation'] ?? map['extrainformation']) is Map
+              ? Map<String, dynamic>.from(map['extraInformation'] ?? map['extrainformation'])
+              : {}),
       createdAt: map['createdAt'] is Timestamp ? map['createdAt'] : Timestamp.now(),
       updatedAt: map['updatedAt'] is Timestamp ? map['updatedAt'] : Timestamp.now(),
     );
@@ -141,6 +148,7 @@ class UserModel {
       'category': category,
       'role': role,
       'status': status,
+      'extraInformation': extraInformation,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
@@ -161,6 +169,7 @@ class UserModel {
     String? category,
     String? role,
     String? status,
+    Map<String, dynamic>? extraInformation,
     Timestamp? createdAt,
     Timestamp? updatedAt,
   }) {
@@ -179,6 +188,7 @@ class UserModel {
       category: category ?? this.category,
       role: role ?? this.role,
       status: status ?? this.status,
+      extraInformation: extraInformation ?? this.extraInformation,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

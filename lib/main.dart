@@ -170,6 +170,11 @@ class _UsersListScreenState extends State<UsersListScreen> {
                             Text('Role: ${user.role} | Status: ${user.status}'),
                             Text('City: ${user.city}, ${user.state} (${user.pincode})'),
                             Text('Income: ₹${user.income} | Category: ${user.category}'),
+                            if (user.extraInformation.isNotEmpty)
+                              Text(
+                                'Extra Info: ${user.extraInformation}',
+                                style: const TextStyle(fontSize: 12, color: Colors.blueGrey),
+                              ),
                           ],
                         ),
                         isThreeLine: true,
@@ -230,6 +235,12 @@ class _UsersListScreenState extends State<UsersListScreen> {
       category: 'OBC',
       role: UserModel.roleCitizen,
       status: UserModel.statusActive,
+      extraInformation: {
+        'occupation': 'Software Engineer',
+        'maritalStatus': 'Single',
+        'preferredLanguage': 'Gujarati',
+        'disabilityStatus': 'None',
+      },
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     );
