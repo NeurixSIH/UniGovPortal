@@ -11,5 +11,9 @@ service cloud.firestore {
     match /departments/{departmentId} {
       allow read, write: if true;
     }
+
+    match /services/{serviceId} {
+      allow read, write: if true;
+    }
   }
 }
