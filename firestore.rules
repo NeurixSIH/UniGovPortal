@@ -35,8 +35,13 @@ service cloud.firestore {
     match /auditLogs/{logId} {
       allow read, write: if true;
     }
+
+    match /serviceFields/{fieldId} {
+      allow read, write: if true;
+    }
   }
 }
+
 
 
 
