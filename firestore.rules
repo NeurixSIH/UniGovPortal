@@ -27,7 +27,12 @@ service cloud.firestore {
     match /consents/{consentId} {
       allow read, write: if true;
     }
+
+    match /notifications/{notificationId} {
+      allow read, write: if true;
+    }
   }
 }
+
 
 
