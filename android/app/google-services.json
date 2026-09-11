@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "755121233171",
+    "project_id": "unigovportal",
+    "storage_bucket": "unigovportal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755121233171:android:a2f72d6c87a7d062384ee6",
+        "android_client_info": {
+          "package_name": "com.example.uni_gov_portal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9-9J_MglVXW7AsUBC-cLZdUIAK92-vkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

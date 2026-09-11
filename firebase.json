@@ -1,0 +1,44 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "unigovportal",
+          "appId": "1:755121233171:android:a2f72d6c87a7d062384ee6",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "unigovportal",
+          "appId": "1:755121233171:ios:da6f9457c6621640384ee6",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "unigovportal",
+          "appId": "1:755121233171:ios:da6f9457c6621640384ee6",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "unigovportal",
+          "configurations": {
+            "android": "1:755121233171:android:a2f72d6c87a7d062384ee6",
+            "ios": "1:755121233171:ios:da6f9457c6621640384ee6",
+            "macos": "1:755121233171:ios:da6f9457c6621640384ee6",
+            "web": "1:755121233171:web:7a1b3a72677ec2c4384ee6",
+            "windows": "1:755121233171:web:4dd54e4e6b3ddc5b384ee6"
+          }
+        }
+      }
+    }
+  }
+}
