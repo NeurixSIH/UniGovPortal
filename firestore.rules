@@ -23,6 +23,11 @@ service cloud.firestore {
     match /documents/{documentId} {
       allow read, write: if true;
     }
+
+    match /consents/{consentId} {
+      allow read, write: if true;
+    }
   }
 }
+
 
