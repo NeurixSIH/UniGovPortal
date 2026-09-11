@@ -39,8 +39,13 @@ service cloud.firestore {
     match /serviceFields/{fieldId} {
       allow read, write: if true;
     }
+
+    match /eligibilityRules/{ruleId} {
+      allow read, write: if true;
+    }
   }
 }
+
 
 
 
