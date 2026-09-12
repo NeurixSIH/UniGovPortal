@@ -173,97 +173,97 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen> {
                             style: AppTypography.h2.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Text(
-                            'Digital Locker integration with Maharashtra State Data Exchange',
-                            style: AppTypography.bodySmall.copyWith(color: Colors.white70),
-                          ),
-                        ],
+                              'Digital Locker integration with Maharashtra State Data Exchange',
+                              style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.m),
-                Row(
-                  children: [
-                    _buildStatPill('Total', '${allDocs.length}', Colors.white),
-                    const SizedBox(width: AppSpacing.s),
-                    _buildStatPill('Verified', '${allDocs.where((d) => d.isVerified).length}', const Color(0xFF86EFAC)),
-                    const SizedBox(width: AppSpacing.s),
-                    _buildStatPill('Pending', '${allDocs.where((d) => !d.isVerified).length}', const Color(0xFFFDE68A)),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.m),
-
-          if (_isSimulatingUpload) ...[
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.m),
-              decoration: BoxDecoration(
-                color: AppColors.primarySurface,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.infoBorder),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ],
                   ),
-                  const SizedBox(width: AppSpacing.m),
-                  Text('Uploading document to secure server...', style: AppTypography.labelBold),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.m),
-          ],
-
-          if (_uploadSuccessMessage != null) ...[
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.m),
-              decoration: BoxDecoration(
-                color: AppColors.successLight,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.successBorder),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 20),
-                  const SizedBox(width: AppSpacing.s),
-                  Expanded(
-                    child: Text(_uploadSuccessMessage!, style: AppTypography.labelBold.copyWith(color: AppColors.success)),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.m),
-          ],
-
-          // Search & Filter controls
-          AppCard(
-            padding: const EdgeInsets.all(AppSpacing.m),
-            child: Column(
-              children: [
-                TextField(
-                  onChanged: (v) => setState(() => _searchQuery = v),
-                  style: AppTypography.bodyMedium,
-                  decoration: InputDecoration(
-                    hintText: 'Search documents by title or reference ID...',
-                    prefixIcon: const Icon(Icons.search_rounded, size: 20, color: AppColors.textMuted),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      borderSide: const BorderSide(color: AppColors.border),
-                    ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.s),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+                  const SizedBox(height: AppSpacing.m),
+                  Row(
                     children: [
+                      _buildStatPill('Total', '${allDocs.length}', Colors.white),
+                      const SizedBox(width: AppSpacing.s),
+                      _buildStatPill('Verified', '${allDocs.where((d) => d.isVerified).length}', const Color(0xFF86EFAC)),
+                      const SizedBox(width: AppSpacing.s),
+                      _buildStatPill('Pending', '${allDocs.where((d) => !d.isVerified).length}', const Color(0xFFFDE68A)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.m),
+
+            if (_isSimulatingUpload) ...[
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                decoration: BoxDecoration(
+                  color: AppColors.primarySurface,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  border: Border.all(color: AppColors.infoBorder),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    ),
+                    const SizedBox(width: AppSpacing.m),
+                    Text('Uploading document to secure server...', style: AppTypography.labelBold),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+            ],
+
+            if (_uploadSuccessMessage != null) ...[
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.m),
+                decoration: BoxDecoration(
+                  color: AppColors.successLight,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  border: Border.all(color: AppColors.successBorder),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 20),
+                    const SizedBox(width: AppSpacing.s),
+                    Expanded(
+                      child: Text(_uploadSuccessMessage!, style: AppTypography.labelBold.copyWith(color: AppColors.success)),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+            ],
+
+            // Search & Filter controls
+            AppCard(
+              padding: const EdgeInsets.all(AppSpacing.m),
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (v) => setState(() => _searchQuery = v),
+                    style: AppTypography.bodyMedium,
+                    decoration: InputDecoration(
+                      hintText: 'Search documents by title or reference ID...',
+                      prefixIcon: const Icon(Icons.search_rounded, size: 20, color: AppColors.textMuted),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        borderSide: const BorderSide(color: AppColors.border),
+                      ),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
                       _buildFilterChip('All Documents', 'ALL'),
                       const SizedBox(width: AppSpacing.s),
                       _buildFilterChip('Verified', 'VERIFIED'),
