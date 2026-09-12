@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unified Government Services Portal | Government of Maharashtra Interoperability Hub</title>
+  <meta name="description" content="SIH26129 - Unified Government Services Portal & Interoperability Hub connecting multiple departmental digital platforms across Maharashtra.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <!-- 1. ACCESSIBILITY & GOV TOP BAR -->
+  <header class="gov-top-bar" role="banner">
+    <div class="gov-org-tag">
+      <span class="flag-stripe" aria-hidden="true"></span>
+      <span><strong>Government of Maharashtra</strong> | Interoperability Hub (SIH26129)</span>
+    </div>
+    <div class="gov-utility-actions">
+      <button class="gov-utility-btn" id="font-decrease" title="Decrease font size">A-</button>
+      <button class="gov-utility-btn" id="font-reset" title="Normal font size">A</button>
+      <button class="gov-utility-btn" id="font-increase" title="Increase font size">A+</button>
+      <button class="gov-utility-btn" id="toggle-contrast" title="Toggle High Contrast">High Contrast</button>
+      <select class="gov-utility-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff;">
+        <option>English</option>
+        <option>मराठी (Marathi)</option>
+        <option>हिन्दी (Hindi)</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- 2. MAIN BRAND HEADER WITH EMBLEM & ROLE SWITCHER -->
+  <div class="gov-main-header">
+    <div class="brand-section">
+      <!-- SVG Emblem representation for reliability -->
+      <svg class="national-emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="National Emblem of India">
+        <circle cx="50" cy="50" r="46" stroke="#0B4A8F" stroke-width="4" fill="#F8FAFC"/>
+        <circle cx="50" cy="50" r="32" stroke="#F58220" stroke-width="3"/>
+        <circle cx="50" cy="50" r="16" stroke="#138808" stroke-width="2"/>
+        <path d="M50 14 V86 M14 50 H86 M24 24 L76 76 M24 76 L76 24" stroke="#0B4A8F" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="6" fill="#0B4A8F"/>
+      </svg>
+      <div class="brand-titles">
+        <h1>
+          Unified Government Services Portal
+          <span class="brand-badge">SIH26129</span>
+        </h1>
+        <span class="dept-tag">Department of Information Technology • Government of Maharashtra</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- 3-Role Switcher -->
+      <div class="role-switcher" role="tablist" aria-label="Role Switcher">
+        <button class="role-tab-btn active" data-role-switch="citizen" role="tab">
+          <span>👤</span> Citizen
+        </button>
+        <button class="role-tab-btn role-dept" data-role-switch="officer" role="tab">
+          <span>🏛️</span> Dept Admin
+        </button>
+        <button class="role-tab-btn role-sys" data-role-switch="admin" role="tab">
+          <span>⚙️</span> System Admin
+        </button>
+      </div>
+
+      <!-- User Profile Header Bubble -->
+      <div class="user-profile-pill" onclick="App.navigateToScreen('screen-my-profile')">
+        <div class="avatar-bubble" id="user-avatar">KP</div>
+        <div>
+          <div class="user-meta-name" id="user-name-display">Krisha Rajesh Patel</div>
+          <div class="user-meta-id" id="user-id-display">MH-CIT-2024-8921</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SIMULATED DEPARTMENT API INTEGRATION BANNER -->
+  <aside class="sim-api-banner">
+    <div style="display: flex; align-items: center;">
+      <span class="banner-pulse"></span>
+      <span class="banner-badge">Federated Mesh</span>
+      <span>Simulated Department API Integration Active — Connecting PMC, Revenue, MahaBhumi Land Records, State Bank DBT</span>
+    </div>
+    <div>
+      <span style="font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.9;">Latency: 42ms • SHA-256 Ledger: Live</span>
+    </div>
+  </aside>
+
+  <!-- 4. MAIN APPLICATION LAYOUT -->
+  <div class="app-container">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <nav class="app-sidebar" aria-label="Portal Navigation">
+      <div class="sidebar-header-badge">
+        <div class="role-indicator" id="active-role-label">Citizen Account</div>
+      </div>
+
+      <!-- CITIZEN NAVIGATION LINKS -->
+      <div data-role-section="citizen">
+        <div class="nav-group-title">Citizen Services</div>
+        <ul class="nav-links-list">
+          <li>
+            <button class="nav-item-btn active" data-target-screen="screen-citizen-dashboard">
+              <span class="nav-icon">📊</span> Dashboard
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-service-catalog">
+              <span class="nav-icon">📋</span> Government Services
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-service-wizard">
+              <span class="nav-icon">📝</span> Apply for Service
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-status-tracker">
+              <span class="nav-icon">📍</span> Track Status
+              <span class="nav-badge">2 Active</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-app-history">
+              <span class="nav-icon">📑</span> Application History
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-docs-vault">
+              <span class="nav-icon">🗄️</span> DigiLocker Documents
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-my-profile">
+              <span class="nav-icon">👤</span> My Profile & Sync
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-consent-mgmt">
+              <span class="nav-icon">🛡️</span> DPDP Act Consent
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-live-sync">
+              <span class="nav-icon">🔄</span> Live Sync Hub
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-notifications">
+              <span class="nav-icon">🔔</span> Notifications
+              <span class="nav-badge">3</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- DEPARTMENT ADMIN NAVIGATION LINKS -->
+      <div data-role-section="officer" style="display: none;">
+        <div class="nav-group-title">Officer Verification</div>
+        <ul class="nav-links-list">
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-officer-dashboard">
+              <span class="nav-icon">📥</span> Scrutiny Queue
+              <span class="nav-badge">4 Pending</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-officer-review">
+              <span class="nav-icon">🔍</span> Application Review
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-sync-audit">
+              <span class="nav-icon">📜</span> Cross-Dept Ledger
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- SYSTEM ADMIN NAVIGATION LINKS -->
+      <div data-role-section="admin" style="display: none;">
+        <div class="nav-group-title">System Interoperability</div>
+        <ul class="nav-links-list">
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-admin-dept-mgmt">
+              <span class="nav-icon">🏛️</span> Department APIs
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-admin-form-builder">
+              <span class="nav-icon">🛠️</span> Dynamic Form Builder
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-admin-rule-builder">
+              <span class="nav-icon">⚡</span> Eligibility Rules Sandbox
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-admin-analytics">
+              <span class="nav-icon">📈</span> Macro Analytics & SLAs
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-target-screen="screen-sync-audit">
+              <span class="nav-icon">⛓️</span> Cryptographic Audit Ledger
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- DEMO TOUR SPECIAL LINK -->
+      <div style="margin-top: 1rem; padding: 0 0.75rem;">
+        <button class="nav-item-btn" style="background: linear-gradient(135deg, #FFEDD5, #FED7AA); color: #C05621; border: 1px solid #FDBA74;" data-target-screen="screen-demo-tour">
+          <span class="nav-icon">🎯</span> Guided End-to-End Tour
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sih-badge">
+          <span>🇮🇳</span> SIH26129 Solution Hub
+        </div>
+        <div style="margin-top: 4px;">Unified Maharashtra Digital Delivery</div>
+      </div>
+    </nav>
+
+    <!-- VIEWPORT CONTENT: 22 CONNECTED SCREENS -->
+    <main class="app-viewport" id="main-viewport">
+
+      <!-- ================================================================
+           SCREEN 1: LOGIN / SIGN UP (SSO PARICHAY & AADHAAR OTP)
+           ================================================================ -->
+      <div class="view-pane" id="screen-login-auth">
+        <div class="auth-wrapper">
+          <div class="auth-sidebar-hero">
+            <div>
+              <span class="brand-badge" style="background: rgba(255,255,255,0.2); color: #FFF; border: none;">SIH26129 Interoperability Hub</span>
+              <h2 style="font-size: 1.8rem; margin-top: 1rem; line-height: 1.2;">Single Sign-On for all Maharashtra Services</h2>
+              <p style="margin-top: 0.75rem; font-size: 0.9rem; opacity: 0.9;">
+                One verified account seamlessly connects you with PMC, Revenue, MahaBhumi, and Social Welfare platforms.
+              </p>
+            </div>
+            <div style="font-size: 0.8rem; opacity: 0.8; font-family: var(--font-mono);">
+              ✔ Aadhaar e-KYC Compliant<br>
+              ✔ DPDP Act 2023 Certified<br>
+              ✔ DigiLocker Linked
+            </div>
+          </div>
+          <div class="auth-form-container">
+            <div class="auth-tab-pills">
+              <button class="auth-pill active">Aadhaar OTP / Parichay</button>
+              <button class="auth-pill">Mobile & Password</button>
+            </div>
+
+            <div class="demo-creds-bar">
+              <strong>Quick Demo Fill:</strong> Click <span class="demo-chip" onclick="document.getElementById('login-aadhaar-input').value = '9821-4402-8921'">Krisha Patel (Citizen)</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Aadhaar Number or MeriPehchan Username</label>
+              <input type="text" id="login-aadhaar-input" class="form-input" placeholder="XXXX-XXXX-8921" value="9821-4402-8921">
+            </div>
+            <div class="form-group">
+              <label class="form-label">One-Time Password (OTP)</label>
+              <input type="password" class="form-input" placeholder="Enter 6-digit OTP" value="789012">
+              <span class="form-help">Simulated OTP sent to Aadhaar-linked mobile (******8812)</span>
+            </div>
+            <button class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;" onclick="App.switchRole('citizen')">
+              Authenticate & Enter Hub ➔
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 2: CITIZEN DASHBOARD
+           ================================================================ -->
+      <div class="view-pane active" id="screen-citizen-dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Citizen Command Dashboard</h1>
+            <p class="page-subtitle">Welcome back, <strong>Krisha Rajesh Patel</strong>! Here is your inter-departmental service overview.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-saffron" onclick="App.navigateToScreen('screen-service-catalog')">
+              <span>+</span> Explore 450+ Services
+            </button>
+            <button class="btn btn-primary" onclick="App.triggerLiveInterDeptSync()">
+              <span>🔄</span> Refresh Department Feeds
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-blue">📋</div>
+            <div class="metric-info">
+              <h3>2</h3>
+              <p>Active Applications</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-green">✔</div>
+            <div class="metric-info">
+              <h3>5</h3>
+              <p>DigiLocker Verified Docs</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-saffron">⚡</div>
+            <div class="metric-info">
+              <h3>4</h3>
+              <p>Connected Dept Portals</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-purple">🛡️</div>
+            <div class="metric-info">
+              <h3>3</h3>
+              <p>Active DPDP Consents</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Dashboard Content Grid -->
+        <div class="dash-layout-grid">
+          <div>
+            <!-- Quick Actions Bar -->
+            <div class="quick-action-grid">
+              <div class="quick-action-card" onclick="App.startApplicationWizard('SRV-AGRI-001')">
+                <div class="quick-action-icon">🌾</div>
+                <h4>Apply Shetkari Yojana</h4>
+                <p>Auto-verified with 7/12</p>
+              </div>
+              <div class="quick-action-card" onclick="App.navigateToScreen('screen-docs-vault')">
+                <div class="quick-action-icon">🗄️</div>
+                <h4>DigiLocker Vault</h4>
+                <p>Reuse uploaded proofs</p>
+              </div>
+              <div class="quick-action-card" onclick="App.navigateToScreen('screen-live-sync')">
+                <div class="quick-action-icon">🔄</div>
+                <h4>Live Sync Status</h4>
+                <p>Inspect API health & ping</p>
+              </div>
+            </div>
+
+            <!-- In-Flight Application Tracker Cards -->
+            <div class="gov-card">
+              <div class="card-header-clean">
+                <h3 class="card-title">Ongoing Inter-Departmental Applications</h3>
+                <button class="btn btn-secondary btn-sm" onclick="App.navigateToScreen('screen-app-history')">View Full History</button>
+              </div>
+              <div id="dash-recent-apps-container"></div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar: Synchronized Profile Summary -->
+          <div>
+            <div class="gov-card highlight-blue" style="margin-bottom: 1.5rem;">
+              <div class="card-header-clean">
+                <h3 class="card-title">Federated Identity</h3>
+                <span class="badge badge-success">Verified</span>
+              </div>
+              <div style="text-align: center; margin-bottom: 1rem;">
+                <div class="avatar-bubble" style="width: 56px; height: 56px; font-size: 1.3rem; margin: 0 auto 8px;">KP</div>
+                <h4 style="font-size: 1.1rem; font-weight: 700;">Krisha Rajesh Patel</h4>
+                <p style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">Aadhaar: XXXX-XXXX-8921</p>
+              </div>
+              <div style="font-size: 0.82rem; line-height: 1.8; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <div><strong>District:</strong> Pune (Haveli Taluka)</div>
+                <div><strong>Land Holding:</strong> 2.50 Acres (7/12 Linked)</div>
+                <div><strong>DBT Bank:</strong> SBI A/C ****4419 (Aadhaar Seeded)</div>
+                <div><strong>Annual Income:</strong> ₹ 1,80,000 p.a.</div>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" style="width: 100%; margin-top: 1rem;" onclick="App.navigateToScreen('screen-my-profile')">
+                Manage Verified Identity ➔
+              </button>
+            </div>
+
+            <!-- DPDP Act Banner -->
+            <div class="gov-card highlight-green">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--gov-green);">DPDP Act 2023 Compliant</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 6px 0 12px;">
+                Your personal data is shared strictly on a purpose-driven basis. You have full legal rights to view and revoke access anytime.
+              </p>
+              <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="App.navigateToScreen('screen-consent-mgmt')">
+                View Consent Ledger
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 3 & 4: MY PROFILE & UPDATE DETAILS
+           ================================================================ -->
+      <div class="view-pane" id="screen-my-profile">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Unified Citizen Profile</h1>
+            <p class="page-subtitle">Consolidated master record synchronized across UIDAI, Revenue Department, and PMC Registries.</p>
+          </div>
+          <button class="btn btn-primary" onclick="App.saveProfileChanges()">
+            Save & Broadcast Sync ➔
+          </button>
+        </div>
+
+        <div class="gov-card" style="margin-bottom: 1.5rem;">
+          <div class="card-header-clean">
+            <h3 class="card-title">Synchronized Identity Fields</h3>
+            <span class="badge badge-success">Cryptographically Bound</span>
+          </div>
+          <div id="profile-fields-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;"></div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 5: CONSENT MANAGEMENT (DPDP ACT 2023)
+           ================================================================ -->
+      <div class="view-pane" id="screen-consent-mgmt">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">DPDP Act Consent Management Console</h1>
+            <p class="page-subtitle">Under Digital Personal Data Protection Act 2023, you hold full sovereignty over cross-department data sharing.</p>
+          </div>
+        </div>
+
+        <div id="consents-list-container"></div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 6: LIVE SYNCHRONIZATION DASHBOARD
+           ================================================================ -->
+      <div class="view-pane" id="screen-live-sync">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Live Inter-Departmental Synchronization Hub</h1>
+            <p class="page-subtitle">Real-time status of APIs, secure hash exchange, and latency across connected departmental portals.</p>
+          </div>
+          <button class="btn btn-primary" onclick="App.triggerLiveInterDeptSync()">
+            <span>⚡</span> Trigger Full Mesh Health Check
+          </button>
+        </div>
+
+        <!-- Network Topology Container -->
+        <div class="sync-topology-container">
+          <div class="topology-header">
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 800; color: #FFF;">Federated Departmental Topology</h3>
+              <p style="font-size: 0.8rem; color: #94A3B8;">Central Interoperability Mesh connecting 5 state registries</p>
+            </div>
+            <span class="badge badge-success" style="background: #22C55E; color: #052e16;">Mesh Status: 100% Operational</span>
+          </div>
+          <div class="topology-nodes-grid" id="live-sync-nodes-container"></div>
+        </div>
+
+        <div class="gov-card">
+          <div class="card-header-clean">
+            <h3 class="card-title">Real-Time Sync Events Stream</h3>
+            <button class="btn btn-secondary btn-sm" onclick="App.navigateToScreen('screen-sync-audit')">Full Audit Ledger</button>
+          </div>
+          <div id="live-sync-recent-events"></div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 7: GOVERNMENT SERVICE CATALOG
+           ================================================================ -->
+      <div class="view-pane" id="screen-service-catalog">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Unified Government Services Catalog</h1>
+            <p class="page-subtitle">Access municipal, revenue, land records, agriculture, and welfare services through a single portal.</p>
+          </div>
+        </div>
+
+        <div class="catalog-filters-bar">
+          <input type="text" class="catalog-search-input" placeholder="Search by service name, department, or keyword (e.g. Shetkari, Water, Land, Caste)...">
+          <select class="form-select" style="max-width: 260px;">
+            <option>All Departments (5)</option>
+            <option>Pune Municipal Corporation</option>
+            <option>Revenue & Forest Department</option>
+            <option>MahaBhumi Land Records</option>
+            <option>Agriculture Department</option>
+          </select>
+        </div>
+
+        <div class="services-cards-grid" id="services-cards-catalog"></div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 8: SERVICE DETAILS & AUTO-ELIGIBILITY CHECK
+           ================================================================ -->
+      <div class="view-pane" id="screen-service-details">
+        <div class="page-header">
+          <button class="btn btn-secondary btn-sm" onclick="App.navigateToScreen('screen-service-catalog')">◀ Back to Catalog</button>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="App.startApplicationWizard()">
+              Apply with 1-Click Verification ➔
+            </button>
+          </div>
+        </div>
+
+        <div class="gov-card highlight-blue" style="margin-bottom: 1.5rem;">
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--gov-primary);" id="details-srv-dept">Agriculture Department</span>
+          <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gov-primary-dark); margin: 6px 0;" id="details-srv-title">MahaDBT Shetkari Sanman Yojana</h2>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.5rem;" id="details-srv-desc"></p>
+          
+          <div id="details-srv-eligibility-badge"></div>
+          <div id="details-srv-rule-result"></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;">
+          <div class="gov-card">
+            <h4 style="font-size: 0.9rem; font-weight: 700;">Service Level Agreement (SLA)</h4>
+            <p style="font-size: 1.3rem; font-weight: 800; color: var(--gov-primary); margin-top: 6px;">7 Business Days</p>
+          </div>
+          <div class="gov-card">
+            <h4 style="font-size: 0.9rem; font-weight: 700;">Statutory Application Fee</h4>
+            <p style="font-size: 1.3rem; font-weight: 800; color: var(--gov-green); margin-top: 6px;">₹ 0 (Free Service)</p>
+          </div>
+          <div class="gov-card">
+            <h4 style="font-size: 0.9rem; font-weight: 700;">Required Verified Proofs</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Aadhaar • 7/12 Extract • Bank Passbook</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 9: DYNAMIC SERVICE APPLICATION FORM WIZARD
+           ================================================================ -->
+      <div class="view-pane" id="screen-service-wizard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Integrated Application Wizard</h1>
+            <p class="page-subtitle" id="wizard-service-title">Application Processing</p>
+          </div>
+        </div>
+
+        <!-- 4-Step Stepper -->
+        <div class="wizard-progress-bar">
+          <div class="wizard-step-node active">
+            <div class="step-circle">1</div>
+            <div class="step-name">Pre-filled Identity</div>
+          </div>
+          <div class="wizard-step-node">
+            <div class="step-circle">2</div>
+            <div class="step-name">Department Fields</div>
+          </div>
+          <div class="wizard-step-node">
+            <div class="step-circle">3</div>
+            <div class="step-name">DigiLocker Proofs</div>
+          </div>
+          <div class="wizard-step-node">
+            <div class="step-circle">4</div>
+            <div class="step-name">DPDP Consent & Submit</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Content Body -->
+        <div id="wizard-step-content"></div>
+
+        <!-- Wizard Navigation Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+          <button class="btn btn-secondary" id="wizard-prev-btn" style="display: none;">◀ Previous</button>
+          <div style="margin-left: auto;">
+            <button class="btn btn-primary" id="wizard-next-btn">Continue to Next Step ➔</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 10: DOCUMENTS (DIGILOCKER VAULT & REUSE)
+           ================================================================ -->
+      <div class="view-pane" id="screen-docs-vault">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Digital Locker Vault & Certificate Repository</h1>
+            <p class="page-subtitle">Your verified documents pulled from national DigiLocker. Zero manual scans or photocopies needed.</p>
+          </div>
+          <button class="btn btn-saffron" onclick="App.showToast('Connecting to National DigiLocker Gateway...')">
+            + Pull New DigiLocker Document
+          </button>
+        </div>
+
+        <div class="docs-vault-grid" id="docs-vault-cards-grid"></div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 11: APPLICATION STATUS TRACKER
+           ================================================================ -->
+      <div class="view-pane" id="screen-status-tracker">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Application Status & Milestone Tracker</h1>
+            <p class="page-subtitle">End-to-end transparent progress across municipal, revenue, and verification desks.</p>
+          </div>
+        </div>
+
+        <div class="gov-card" style="padding: 0; overflow: hidden; margin-bottom: 2rem;">
+          <div class="tracker-card-header" id="tracker-app-header"></div>
+          <div class="tracker-timeline" id="tracker-timeline-box"></div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 12: APPLICATION HISTORY
+           ================================================================ -->
+      <div class="view-pane" id="screen-app-history">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Application History & Archives</h1>
+            <p class="page-subtitle">Complete ledger of all applications submitted across all connected departments.</p>
+          </div>
+        </div>
+
+        <div class="data-table-container">
+          <table class="gov-table">
+            <thead>
+              <tr>
+                <th>App Reference</th>
+                <th>Service Name</th>
+                <th>Department</th>
+                <th>Applied Date</th>
+                <th>Current Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="app-history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 13: NOTIFICATIONS CENTER
+           ================================================================ -->
+      <div class="view-pane" id="screen-notifications">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Notification & Alerts Center</h1>
+            <p class="page-subtitle">Actionable alerts regarding approvals, DBT disbursements, and required actions.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="App.showToast('All notifications marked as read')">Mark all as read</button>
+        </div>
+
+        <div id="notifications-list-container"></div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 14: AUDIT LEDGER / SYNC LOG
+           ================================================================ -->
+      <div class="view-pane" id="screen-sync-audit">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Cryptographic Sync Audit Ledger</h1>
+            <p class="page-subtitle">Immutable SHA-256 verification log tracking all cross-department data handoffs and API syncs.</p>
+          </div>
+          <button class="btn btn-outline-primary btn-sm" onclick="App.triggerLiveInterDeptSync()">Synchronize Now</button>
+        </div>
+
+        <div class="data-table-container">
+          <table class="gov-table">
+            <thead>
+              <tr>
+                <th>Event ID</th>
+                <th>Timestamp</th>
+                <th>Source Registry</th>
+                <th>Target Registry</th>
+                <th>Handoff Action</th>
+                <th>Status</th>
+                <th>SHA-256 Checksum</th>
+              </tr>
+            </thead>
+            <tbody id="audit-ledger-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 15 & 16: DEPARTMENT ADMIN DASHBOARD & SCRUTINY QUEUE
+           ================================================================ -->
+      <div class="view-pane" id="screen-officer-dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Department Scrutiny & Approval Desk</h1>
+            <p class="page-subtitle">Desk Officer Console: Verify cross-department data proofs and take sanction actions.</p>
+          </div>
+          <span class="badge badge-warning" style="font-size: 0.85rem; padding: 6px 14px;">Role: Desk Officer (Pune District)</span>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-saffron">⏳</div>
+            <div class="metric-info">
+              <h3>4</h3>
+              <p>Pending Scrutiny</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-green">✔</div>
+            <div class="metric-info">
+              <h3>28</h3>
+              <p>Approved This Week</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-blue">⚡</div>
+            <div class="metric-info">
+              <h3>94%</h3>
+              <p>Auto-Verified by APIs</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-purple">⏱️</div>
+            <div class="metric-info">
+              <h3>1.8 Days</h3>
+              <p>Avg SLA Turnaround</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-card">
+          <div class="card-header-clean">
+            <h3 class="card-title">Incoming Verification Queue</h3>
+          </div>
+          <div class="data-table-container">
+            <table class="gov-table">
+              <thead>
+                <tr>
+                  <th>App Ref</th>
+                  <th>Applicant Name</th>
+                  <th>Service Requested</th>
+                  <th>Submission Date</th>
+                  <th>Status</th>
+                  <th>SLA Compliance</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="officer-queue-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 17: APPLICATION REVIEW / APPROVE-REJECT
+           ================================================================ -->
+      <div class="view-pane" id="screen-officer-review">
+        <div class="page-header">
+          <button class="btn btn-secondary btn-sm" onclick="App.navigateToScreen('screen-officer-dashboard')">◀ Back to Queue</button>
+        </div>
+        <div id="officer-review-content"></div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 18: SYSTEM ADMIN DEPARTMENT MANAGEMENT
+           ================================================================ -->
+      <div class="view-pane" id="screen-admin-dept-mgmt">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Interoperability Platform Registry</h1>
+            <p class="page-subtitle">Configure, monitor, and federate digital platform APIs across departments.</p>
+          </div>
+          <button class="btn btn-primary" onclick="App.showToast('Registering new department gateway endpoint...')">+ Register New Department</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;" id="admin-dept-cards-grid"></div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 19: DYNAMIC SERVICE FIELD BUILDER (WITH LIVE PREVIEW)
+           ================================================================ -->
+      <div class="view-pane" id="screen-admin-form-builder">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dynamic Zero-Code Form Schema Builder</h1>
+            <p class="page-subtitle">Define application fields for any government department with instant live citizen preview.</p>
+          </div>
+        </div>
+
+        <div class="builder-split-pane">
+          <!-- Left: Schema Configuration -->
+          <div class="builder-editor-box">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--gov-primary-dark); margin-bottom: 1rem;">Configure Fields (Shetkari Yojana)</h3>
+            
+            <div style="display: flex; gap: 8px; margin-bottom: 1.5rem;">
+              <input type="text" id="new-field-label" class="form-input" placeholder="Field Label (e.g. Crop Variety)">
+              <select id="new-field-type" class="form-select" style="max-width: 140px;">
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="select">Dropdown</option>
+                <option value="textarea">Textarea</option>
+              </select>
+              <button class="btn btn-primary" onclick="App.addBuilderField()">+ Add</button>
+            </div>
+
+            <div id="builder-fields-list"></div>
+          </div>
+
+          <!-- Right: Live Instant Preview -->
+          <div class="builder-preview-box" id="builder-live-preview"></div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 20: ELIGIBILITY RULE CONFIGURATION & SANDBOX
+           ================================================================ -->
+      <div class="view-pane" id="screen-admin-rule-builder">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Eligibility Rule Engine & Live Sandbox</h1>
+            <p class="page-subtitle">Configure automated pre-qualification rules evaluated across cross-department registries.</p>
+          </div>
+        </div>
+
+        <div class="builder-split-pane">
+          <div class="builder-editor-box">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--gov-primary-dark); margin-bottom: 1rem;">Policy Rule Definition</h3>
+            
+            <div class="form-group">
+              <label class="form-label">Rule Identifier</label>
+              <input class="form-input" value="MH-RULE-AGRI-01 (Shetkari Land & Income Rule)" readonly style="background: #F1F5F9;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Data Registry 1 Check</label>
+              <input class="form-input" value="MahaBhumi Bhulekh: landHoldingsAcres > 0" readonly style="background: #F1F5F9;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Data Registry 2 Check</label>
+              <input class="form-input" value="Revenue Dept: annualIncome <= 250000" readonly style="background: #F1F5F9;">
+            </div>
+
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem;">Simulate Test Evaluation</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label class="form-label">Test Landholding (Acres)</label>
+                <input type="number" id="sandbox-test-land" class="form-input" value="2.5">
+              </div>
+              <div>
+                <label class="form-label">Test Annual Income (₹)</label>
+                <input type="number" id="sandbox-test-income" class="form-input" value="180000">
+              </div>
+            </div>
+            <button class="btn btn-saffron" style="width: 100%; margin-top: 1rem;" onclick="App.testRuleSandbox()">
+              Run Sandbox Engine Test ➔
+            </button>
+          </div>
+
+          <div class="builder-preview-box">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--gov-primary);">Engine Evaluation Console</h4>
+            <div class="rule-sandbox-console" id="rule-sandbox-output"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 21: MACRO REPORTS & ANALYTICS
+           ================================================================ -->
+      <div class="view-pane" id="screen-admin-analytics">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">State-Level Macro Delivery Analytics</h1>
+            <p class="page-subtitle">SLA compliance, cross-department throughput, and digital interoperability adoption metrics.</p>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-blue">📊</div>
+            <div class="metric-info">
+              <h3>24,190</h3>
+              <p>Total Cross-Dept Syncs</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-green">⚡</div>
+            <div class="metric-info">
+              <h3>97.8%</h3>
+              <p>SLA Compliance Rate</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-saffron">⏱️</div>
+            <div class="metric-info">
+              <h3>2.3 Days</h3>
+              <p>Average Delivery Time</p>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon-box metric-icon-purple">🏢</div>
+            <div class="metric-info">
+              <h3>5 / 5</h3>
+              <p>Active Integrated Nodes</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gov-card">
+          <div class="card-header-clean">
+            <h3 class="card-title">Inter-Department SLA Performance</h3>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Agriculture Department (Shetkari Yojana)</span>
+                <span>99.2% on time</span>
+              </div>
+              <div style="height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+                <div style="width: 99.2%; height: 100%; background: var(--gov-green);"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Revenue Department (Certificates)</span>
+                <span>96.5% on time</span>
+              </div>
+              <div style="height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+                <div style="width: 96.5%; height: 100%; background: var(--gov-primary);"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Pune Municipal Corporation (Water & Trade)</span>
+                <span>94.1% on time</span>
+              </div>
+              <div style="height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+                <div style="width: 94.1%; height: 100%; background: var(--gov-saffron);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SCREEN 22: GUIDED END-TO-END DEMO TOUR
+           ================================================================ -->
+      <div class="view-pane" id="screen-demo-tour">
+        <div class="tour-banner-header">
+          <div>
+            <span class="badge" style="background: #F58220; color: #FFF; margin-bottom: 6px;">SIH26129 Presentation Mode</span>
+            <h2 style="font-size: 1.5rem; font-weight: 800;">End-to-End Interoperability Demonstration</h2>
+            <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 4px;">
+              Guided 12-stage walkthrough showcasing how the platform solves fragmented government service delivery.
+            </p>
+          </div>
+          <button class="btn btn-green" onclick="App.jumpToTourStep(0)">Restart Tour ↺</button>
+        </div>
+
+        <div class="tour-steps-stepper" id="demo-tour-stepper"></div>
+        <div id="demo-tour-current-step-box"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="gov-toast" id="gov-toast" role="alert" aria-live="assertive">
+    <span style="font-size: 1.2rem;">🔔</span>
+    <span id="toast-message">Application Notification</span>
+  </div>
+
+  <!-- GENERIC MODAL WINDOW -->
+  <div class="gov-modal-backdrop" id="gov-modal-backdrop" role="dialog" aria-modal="true">
+    <div class="gov-modal">
+      <div class="gov-modal-header">
+        <h3 class="card-title" id="modal-title">Verification Modal</h3>
+        <button class="btn btn-secondary btn-sm" id="modal-close-btn">✕</button>
+      </div>
+      <div class="gov-modal-body" id="modal-body"></div>
+      <div class="gov-modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal()">Close</button>
+        <button class="btn btn-primary" id="modal-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Data & Application Engine -->
+  <script src="scripts/data.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
