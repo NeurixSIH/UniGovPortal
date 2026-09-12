@@ -61,4 +61,25 @@ class UserService {
             .map((doc) => UserModel.fromFirestore(doc))
             .toList());
   }
+
+  /// Stream all officers (departmentAdmin role)
+  Stream<List<UserModel>> streamAllOfficers() {
+    return streamUsersByRole(UserModel.roleDepartmentAdmin);
+  }
+
+  /// Stream officers belonging to a specific department
+  Stream<List<UserModel>> streamOfficersByDepartment(String departmentId) {
+    return _usersCollection
+        .where('role', isEqualTo: UserModel.roleDepartmentAdmin)
+        .where('departmentId', isEqualTo: departmentId)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => UserModel.fromFirestore(doc))
+            .toList());
+  }
+
+  /// Activate or deactivate an officer account
+  Future<void> updateOfficerStatus(String userId, String status) async {
+    await updateUser(userId, {'status': status});
+  }
 }

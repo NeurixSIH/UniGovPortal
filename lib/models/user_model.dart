@@ -67,6 +67,9 @@ class UserModel {
   final String category;
   final String role; // 'citizen', 'departmentAdmin', 'systemAdmin'
   final String status; // 'active', 'blocked'
+  final String departmentId; // Assigned department for departmentAdmin
+  final String landOwnership; // E.g. 'Owns Agricultural Land', 'None'
+  final String incomeBracket; // E.g. '₹1,00,000 - ₹3,00,000'
   final Map<String, dynamic> extraInformation; // Additional custom metadata map
   final Timestamp createdAt;
   final Timestamp updatedAt;
@@ -86,6 +89,9 @@ class UserModel {
     required this.category,
     required this.role,
     required this.status,
+    this.departmentId = '',
+    this.landOwnership = 'None',
+    this.incomeBracket = '',
     this.extraInformation = const {},
     required this.createdAt,
     required this.updatedAt,
@@ -100,7 +106,19 @@ class UserModel {
   static const String statusActive = 'active';
   static const String statusBlocked = 'blocked';
 
+  String get citizenId => userId;
+
   factory UserModel.fromMap(Map<String, dynamic> map, {String? docId}) {
+    final extra = (map['extraInformation'] ?? map['extrainformation']) is Map<String, dynamic>
+        ? Map<String, dynamic>.from(map['extraInformation'] ?? map['extrainformation'])
+        : ((map['extraInformation'] ?? map['extrainformation']) is Map
+            ? Map<String, dynamic>.from(map['extraInformation'] ?? map['extrainformation'])
+            : <String, dynamic>{});
+
+    final String resolvedDeptId = map['departmentId'] ?? extra['departmentId'] ?? '';
+    final String resolvedLand = map['landOwnership'] ?? extra['landOwnership'] ?? 'None';
+    final String resolvedIncomeBracket = map['incomeBracket'] ?? extra['incomeBracket'] ?? '';
+
     return UserModel(
       userId: map['userId'] ?? docId ?? '',
       fullName: map['fullName'] ?? '',
@@ -118,11 +136,10 @@ class UserModel {
       category: map['category'] ?? '',
       role: map['role'] ?? roleCitizen,
       status: map['status'] ?? statusActive,
-      extraInformation: (map['extraInformation'] ?? map['extrainformation']) is Map<String, dynamic>
-          ? Map<String, dynamic>.from(map['extraInformation'] ?? map['extrainformation'])
-          : ((map['extraInformation'] ?? map['extrainformation']) is Map
-              ? Map<String, dynamic>.from(map['extraInformation'] ?? map['extrainformation'])
-              : {}),
+      departmentId: resolvedDeptId,
+      landOwnership: resolvedLand,
+      incomeBracket: resolvedIncomeBracket,
+      extraInformation: extra,
       createdAt: map['createdAt'] is Timestamp ? map['createdAt'] : Timestamp.now(),
       updatedAt: map['updatedAt'] is Timestamp ? map['updatedAt'] : Timestamp.now(),
     );
@@ -148,6 +165,9 @@ class UserModel {
       'category': category,
       'role': role,
       'status': status,
+      'departmentId': departmentId,
+      'landOwnership': landOwnership,
+      'incomeBracket': incomeBracket,
       'extraInformation': extraInformation,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
@@ -169,6 +189,9 @@ class UserModel {
     String? category,
     String? role,
     String? status,
+    String? departmentId,
+    String? landOwnership,
+    String? incomeBracket,
     Map<String, dynamic>? extraInformation,
     Timestamp? createdAt,
     Timestamp? updatedAt,
@@ -188,6 +211,9 @@ class UserModel {
       category: category ?? this.category,
       role: role ?? this.role,
       status: status ?? this.status,
+      departmentId: departmentId ?? this.departmentId,
+      landOwnership: landOwnership ?? this.landOwnership,
+      incomeBracket: incomeBracket ?? this.incomeBracket,
       extraInformation: extraInformation ?? this.extraInformation,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

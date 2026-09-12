@@ -45,6 +45,16 @@ class ConsentService {
     });
   }
 
+  /// Grant citizen consent
+  Future<void> grantConsent(String consentId) async {
+    await updateConsentStatus(consentId, ConsentModel.statusGranted);
+  }
+
+  /// Deny citizen consent
+  Future<void> denyConsent(String consentId) async {
+    await updateConsentStatus(consentId, ConsentModel.statusDenied);
+  }
+
   /// Revoke citizen consent
   Future<void> revokeConsent(String consentId) async {
     await updateConsentStatus(consentId, ConsentModel.statusRevoked);
@@ -108,6 +118,17 @@ class ConsentService {
     return _consentsCollection
         .where('userId', isEqualTo: userId)
         .where('status', isEqualTo: ConsentModel.statusGranted)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => ConsentModel.fromFirestore(doc))
+            .toList());
+  }
+
+  /// Stream pending consent requests for a citizen
+  Stream<List<ConsentModel>> streamPendingConsentsByUser(String userId) {
+    return _consentsCollection
+        .where('userId', isEqualTo: userId)
+        .where('status', isEqualTo: ConsentModel.statusPending)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => ConsentModel.fromFirestore(doc))

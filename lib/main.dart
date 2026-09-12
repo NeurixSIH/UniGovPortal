@@ -1,15 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
-import 'models/user_model.dart';
-import 'services/user_service.dart';
+import 'theme/app_theme.dart';
+import 'data/demo_repository.dart';
+import 'widgets/smartphone_frame.dart';
+
+// Citizen Screens
+import 'screens/citizen/landing_screen.dart';
+import 'screens/citizen/login_screen.dart';
+import 'screens/citizen/citizen_home_dashboard.dart';
+import 'screens/citizen/profile_screen.dart';
+import 'screens/citizen/update_personal_details_screen.dart';
+import 'screens/citizen/consent_management_screen.dart';
+import 'screens/citizen/live_sync_dashboard.dart';
+import 'screens/citizen/service_catalog_screen.dart';
+import 'screens/citizen/service_details_eligibility_screen.dart';
+import 'screens/citizen/dynamic_application_form_screen.dart';
+import 'screens/citizen/my_documents_screen.dart';
+import 'screens/citizen/application_status_tracker_screen.dart';
+import 'screens/citizen/application_history_screen.dart';
+import 'screens/citizen/notifications_screen.dart';
+import 'screens/citizen/sync_audit_log_screen.dart';
+
+// Department Admin Screens
+import 'screens/dept_admin/dept_admin_login_screen.dart';
+import 'screens/dept_admin/dept_admin_dashboard.dart';
+import 'screens/dept_admin/application_review_screen.dart';
+
+// System Admin Screens
+import 'screens/system_admin/system_admin_login_screen.dart';
+import 'screens/system_admin/system_admin_home_screen.dart';
+import 'screens/system_admin/system_admin_profile_and_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (_) {
+    // Graceful fallback for offline / web preview testing
+  }
   runApp(const UniGovApp());
 }
 
@@ -19,245 +50,436 @@ class UniGovApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'UniGov Portal',
+      title: 'Maharashtra Interoperability Hub',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1E3A8A),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-      ),
-      home: const UsersListScreen(),
+      theme: AppTheme.lightTheme,
+      home: const MasterAppShell(),
     );
   }
 }
 
-class UsersListScreen extends StatefulWidget {
-  const UsersListScreen({super.key});
+class MasterAppShell extends StatefulWidget {
+  const MasterAppShell({super.key});
 
   @override
-  State<UsersListScreen> createState() => _UsersListScreenState();
+  State<MasterAppShell> createState() => _MasterAppShellState();
 }
 
-class _UsersListScreenState extends State<UsersListScreen> {
-  final UserService _userService = UserService();
-  String _selectedRoleFilter = 'all';
+class _MasterAppShellState extends State<MasterAppShell> {
+  final DemoRepository _repo = DemoRepository();
+
+  // Navigation state
+  String _currentRoute = 'citizen_home';
+  String _selectedServiceId = 'SRV_INCOME_CERT';
+  String _selectedAppId = 'APP20260904';
+  int _citizenBottomNavIndex = 0;
+  int _deptBottomNavIndex = 0;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('UniGov - Users Collection'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_add),
-            tooltip: 'Add Sample User',
-            onPressed: () => _addSampleUser(context),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Filter Chips
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  ChoiceChip(
-                    label: const Text('All Roles'),
-                    selected: _selectedRoleFilter == 'all',
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedRoleFilter = 'all');
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  ChoiceChip(
-                    label: const Text('Citizen'),
-                    selected: _selectedRoleFilter == UserModel.roleCitizen,
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedRoleFilter = UserModel.roleCitizen);
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  ChoiceChip(
-                    label: const Text('Dept Admin'),
-                    selected: _selectedRoleFilter == UserModel.roleDepartmentAdmin,
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedRoleFilter = UserModel.roleDepartmentAdmin);
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  ChoiceChip(
-                    label: const Text('System Admin'),
-                    selected: _selectedRoleFilter == UserModel.roleSystemAdmin,
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedRoleFilter = UserModel.roleSystemAdmin);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Divider(height: 1),
-          // Users List
-          Expanded(
-            child: StreamBuilder<List<UserModel>>(
-              stream: _selectedRoleFilter == 'all'
-                  ? _userService.streamAllUsers()
-                  : _userService.streamUsersByRole(_selectedRoleFilter),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text('Error loading users: ${snapshot.error}'),
-                    ),
-                  );
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                final users = snapshot.data ?? [];
-                if (users.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.people_outline, size: 64, color: Colors.grey),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'No users in Firestore collection yet',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.add),
-                          label: const Text('Create Sample User'),
-                          onPressed: () => _addSampleUser(context),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    final user = users[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: _getRoleColor(user.role),
-                          child: Text(
-                            user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : 'U',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        title: Text(
-                          user.fullName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${user.email} • ${user.mobileNumber}'),
-                            Text('Role: ${user.role} | Status: ${user.status}'),
-                            Text('City: ${user.city}, ${user.state} (${user.pincode})'),
-                            Text('Income: ₹${user.income} | Category: ${user.category}'),
-                            if (user.extraInformation.isNotEmpty)
-                              Text(
-                                'Extra Info: ${user.extraInformation}',
-                                style: const TextStyle(fontSize: 12, color: Colors.blueGrey),
-                              ),
-                          ],
-                        ),
-                        isThreeLine: true,
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                          onPressed: () async {
-                            await _userService.deleteUser(user.userId);
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Deleted user ${user.fullName}')),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    _repo.addListener(_onRepoChanged);
   }
 
-  Color _getRoleColor(String role) {
-    switch (role) {
-      case UserModel.roleSystemAdmin:
-        return Colors.deepPurple;
-      case UserModel.roleDepartmentAdmin:
-        return Colors.indigo;
-      case UserModel.roleCitizen:
-      default:
-        return Colors.teal;
+  @override
+  void dispose() {
+    _repo.removeListener(_onRepoChanged);
+    super.dispose();
+  }
+
+  void _onRepoChanged() {
+    if (_repo.activeRole == 'departmentAdmin' && !_currentRoute.startsWith('dept_')) {
+      setState(() {
+        _currentRoute = 'dept_dashboard';
+      });
+    } else if (_repo.activeRole == 'systemAdmin' && !_currentRoute.startsWith('system_')) {
+      setState(() {
+        _currentRoute = 'system_home';
+      });
+    } else if (_repo.activeRole == 'citizen' &&
+        (_currentRoute.startsWith('dept_') || _currentRoute.startsWith('system_'))) {
+      setState(() {
+        _currentRoute = 'citizen_home';
+      });
     }
   }
 
-  Future<void> _addSampleUser(BuildContext context) async {
-    final newId = 'USR_${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
-    final sampleUser = UserModel(
-      userId: newId,
-      fullName: 'Priya Patel',
-      email: 'priya.patel@example.com',
-      mobileNumber: '+919876543211',
-      dob: Timestamp.fromDate(DateTime(1998, 8, 20)),
-      gender: 'Female',
-      address: {
-        'line1': 'B-304, Green City',
-        'city': 'Surat',
-        'state': 'Gujarat',
-        'pincode': '395007',
-      },
-      city: 'Surat',
-      state: 'Gujarat',
-      pincode: '395007',
-      income: 500000,
-      category: 'OBC',
-      role: UserModel.roleCitizen,
-      status: UserModel.statusActive,
-      extraInformation: {
-        'occupation': 'Software Engineer',
-        'maritalStatus': 'Single',
-        'preferredLanguage': 'Gujarati',
-        'disabilityStatus': 'None',
-      },
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-    );
+  void _navigateTo(String route, {dynamic arguments}) {
+    setState(() {
+      _currentRoute = route;
+      if (route == 'service_detail' && arguments is String) {
+        _selectedServiceId = arguments;
+      }
+      if ((route == 'tracker' || route == 'dept_review') && arguments is String) {
+        _selectedAppId = arguments;
+      }
+      // Sync bottom nav index if matching tab
+      if (route == 'citizen_home') _citizenBottomNavIndex = 0;
+      if (route == 'services') _citizenBottomNavIndex = 1;
+      if (route == 'applications') _citizenBottomNavIndex = 2;
+      if (route == 'documents') _citizenBottomNavIndex = 3;
+      if (route == 'profile') _citizenBottomNavIndex = 4;
+    });
+  }
 
-    try {
-      await _userService.addUser(sampleUser);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Added user: ${sampleUser.fullName} ($newId)')),
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _repo,
+      builder: (context, _) {
+        return SmartphoneFrame(
+          activeScreenTitle: _getScreenTitle(_currentRoute),
+          onNavigateTo: (screenKey) => _navigateTo(screenKey),
+          child: Column(
+            children: [
+              // Screen Body
+              Expanded(child: _buildCurrentScreen()),
+
+              // Bottom Navigation Bar
+              if (_shouldShowBottomNav()) _buildBottomNavigationBar(),
+            ],
+          ),
         );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error adding user: $e')),
+      },
+    );
+  }
+
+  bool _shouldShowBottomNav() {
+    // Hide bottom nav on landing, login, forms, and deep review
+    if (_currentRoute == 'landing' ||
+        _currentRoute == 'login' ||
+        _currentRoute == 'dept_login' ||
+        _currentRoute == 'system_login' ||
+        _currentRoute == 'dynamic_form') {
+      return false;
+    }
+    return true;
+  }
+
+  Widget _buildBottomNavigationBar() {
+    if (_repo.activeRole == 'citizen') {
+      return NavigationBar(
+        selectedIndex: _citizenBottomNavIndex,
+        height: 62,
+        backgroundColor: Colors.white,
+        indicatorColor: AppTheme.primaryBlue.withAlpha(25),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home, color: AppTheme.primaryBlue),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.grid_view_outlined),
+            selectedIcon: Icon(Icons.grid_view, color: AppTheme.primaryBlue),
+            label: 'Services',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment, color: AppTheme.primaryBlue),
+            label: 'Applications',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.folder_outlined),
+            selectedIcon: Icon(Icons.folder, color: AppTheme.primaryBlue),
+            label: 'Documents',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person, color: AppTheme.primaryBlue),
+            label: 'Profile',
+          ),
+        ],
+        onDestinationSelected: (idx) {
+          setState(() {
+            _citizenBottomNavIndex = idx;
+            switch (idx) {
+              case 0:
+                _currentRoute = 'citizen_home';
+                break;
+              case 1:
+                _currentRoute = 'services';
+                break;
+              case 2:
+                _currentRoute = 'applications';
+                break;
+              case 3:
+                _currentRoute = 'documents';
+                break;
+              case 4:
+                _currentRoute = 'profile';
+                break;
+            }
+          });
+        },
+      );
+    } else if (_repo.activeRole == 'departmentAdmin') {
+      return NavigationBar(
+        selectedIndex: _deptBottomNavIndex,
+        height: 62,
+        backgroundColor: Colors.white,
+        indicatorColor: AppTheme.primaryBlue.withAlpha(25),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard, color: AppTheme.primaryBlue),
+            label: 'Dashboard',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.rate_review_outlined),
+            selectedIcon: Icon(Icons.rate_review, color: AppTheme.primaryBlue),
+            label: 'Review',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.folder_shared_outlined),
+            selectedIcon: Icon(Icons.folder_shared, color: AppTheme.primaryBlue),
+            label: 'Documents',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.badge_outlined),
+            selectedIcon: Icon(Icons.badge, color: AppTheme.primaryBlue),
+            label: 'Officer',
+          ),
+        ],
+        onDestinationSelected: (idx) {
+          setState(() {
+            _deptBottomNavIndex = idx;
+            switch (idx) {
+              case 0:
+                _currentRoute = 'dept_dashboard';
+                break;
+              case 1:
+                _currentRoute = 'dept_review';
+                break;
+              case 2:
+                _currentRoute = 'documents';
+                break;
+              case 3:
+                _currentRoute = 'dept_dashboard';
+                break;
+            }
+          });
+        },
+      );
+    } else {
+      // System Admin Navigation
+      return NavigationBar(
+        selectedIndex: _currentRoute == 'system_settings' ? 1 : 0,
+        height: 62,
+        backgroundColor: Colors.white,
+        indicatorColor: AppTheme.primaryBlue.withAlpha(25),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.people_outline),
+            selectedIcon: Icon(Icons.people, color: AppTheme.primaryBlue),
+            label: 'Officers Directory',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings, color: AppTheme.primaryBlue),
+            label: 'Settings',
+          ),
+        ],
+        onDestinationSelected: (idx) {
+          setState(() {
+            if (idx == 0) _currentRoute = 'system_home';
+            if (idx == 1) _currentRoute = 'system_settings';
+          });
+        },
+      );
+    }
+  }
+
+  Widget _buildCurrentScreen() {
+    switch (_currentRoute) {
+      // 1. Landing Screen
+      case 'landing':
+        return LandingScreen(
+          onGetStarted: () => _navigateTo('login'),
+          onLogin: () => _navigateTo('login'),
         );
-      }
+
+      // 2. Login Screen
+      case 'login':
+        return LoginScreen(
+          onLoginSuccess: () => _navigateTo('citizen_home'),
+          onBack: () => _navigateTo('landing'),
+        );
+
+      // 3. Citizen Home / Dashboard
+      case 'citizen_home':
+        return CitizenHomeDashboard(onNavigate: _navigateTo);
+
+      // 4. My Profile
+      case 'profile':
+        return ProfileScreen(
+          onEditProfile: () => _navigateTo('update_profile'),
+          onBack: () => _navigateTo('citizen_home'),
+        );
+
+      // 5. Update Personal Details
+      case 'update_profile':
+        return UpdatePersonalDetailsScreen(
+          onSaved: () => _navigateTo('live_sync'),
+          onCancel: () => _navigateTo('profile'),
+        );
+
+      // 6. Consent Management
+      case 'consent':
+        return ConsentManagementScreen(
+          onBack: () => _navigateTo('citizen_home'),
+          onViewAuditLog: () => _navigateTo('audit_log'),
+        );
+
+      // 7. Live Synchronization Dashboard
+      case 'live_sync':
+        return LiveSyncDashboard(
+          onBack: () => _navigateTo('citizen_home'),
+          onViewAuditLog: () => _navigateTo('audit_log'),
+        );
+
+      // 8. Service Catalog
+      case 'services':
+        return ServiceCatalogScreen(
+          onSelectService: (id) => _navigateTo('service_detail', arguments: id),
+          onBack: () => _navigateTo('citizen_home'),
+        );
+
+      // 9. Service Details + Auto Eligibility
+      case 'service_detail':
+        return ServiceDetailsEligibilityScreen(
+          serviceId: _selectedServiceId,
+          onContinue: () => _navigateTo('dynamic_form'),
+          onBack: () => _navigateTo('services'),
+        );
+
+      // 10. Dynamic Application Form
+      case 'dynamic_form':
+        return DynamicApplicationFormScreen(
+          onSubmitSuccess: () => _navigateTo('tracker', arguments: 'APP20260904'),
+          onBack: () => _navigateTo('service_detail', arguments: _selectedServiceId),
+        );
+
+      // 11. My Documents
+      case 'documents':
+        return MyDocumentsScreen(
+          onBack: () => _navigateTo('citizen_home'),
+        );
+
+      // 12. Application Status Tracker
+      case 'tracker':
+        return ApplicationStatusTrackerScreen(
+          applicationId: _selectedAppId,
+          onBack: () => _navigateTo('applications'),
+        );
+
+      // 13. Application History
+      case 'applications':
+        return ApplicationHistoryScreen(
+          onSelectApplication: (id) => _navigateTo('tracker', arguments: id),
+          onBack: () => _navigateTo('citizen_home'),
+        );
+
+      // 14. Notifications
+      case 'notifications':
+        return NotificationsScreen(
+          onBack: () => _navigateTo('citizen_home'),
+          onNavigate: _navigateTo,
+        );
+
+      // 15. Sync Audit Log
+      case 'audit_log':
+        return SyncAuditLogScreen(
+          onBack: () => _navigateTo('live_sync'),
+        );
+
+      // 16. Department Admin Login
+      case 'dept_login':
+        return DeptAdminLoginScreen(
+          onLoginSuccess: () => _navigateTo('dept_dashboard'),
+          onBack: () => _navigateTo('landing'),
+        );
+
+      // 17. Department Admin Dashboard
+      case 'dept_dashboard':
+        return DeptAdminDashboard(onNavigate: _navigateTo);
+
+      // 18. Application Review
+      case 'dept_review':
+        return ApplicationReviewScreen(
+          applicationId: _selectedAppId,
+          onBack: () => _navigateTo('dept_dashboard'),
+        );
+
+      // 19. System Admin Login
+      case 'system_login':
+        return SystemAdminLoginScreen(
+          onLoginSuccess: () => _navigateTo('system_home'),
+          onBack: () => _navigateTo('landing'),
+        );
+
+      // 20-23. System Admin Home & Officers Management
+      case 'system_home':
+        return SystemAdminHomeScreen(onNavigate: _navigateTo);
+
+      // 24-26. System Admin Profile & Settings
+      case 'system_settings':
+        return SystemAdminProfileAndSettings(
+          onLogout: () => _navigateTo('system_login'),
+          onBack: () => _navigateTo('system_home'),
+        );
+
+      default:
+        return CitizenHomeDashboard(onNavigate: _navigateTo);
+    }
+  }
+
+  String _getScreenTitle(String route) {
+    switch (route) {
+      case 'landing':
+        return 'Landing Screen';
+      case 'login':
+        return 'Citizen Login';
+      case 'citizen_home':
+        return 'Citizen Dashboard';
+      case 'profile':
+        return 'My Profile';
+      case 'update_profile':
+        return 'Update Details';
+      case 'consent':
+        return 'Consent Hub';
+      case 'live_sync':
+        return 'Live Sync Hub';
+      case 'services':
+        return 'Service Catalog';
+      case 'service_detail':
+        return 'Service Details';
+      case 'dynamic_form':
+        return 'Apply Service';
+      case 'documents':
+        return 'My Documents';
+      case 'tracker':
+        return 'Status Tracker';
+      case 'applications':
+        return 'Application History';
+      case 'notifications':
+        return 'Notification Center';
+      case 'audit_log':
+        return 'Sync Audit Log';
+      case 'dept_login':
+        return 'Dept Admin Login';
+      case 'dept_dashboard':
+        return 'Dept Dashboard';
+      case 'dept_review':
+        return 'Application Review';
+      case 'system_login':
+        return 'System Admin Login';
+      case 'system_home':
+        return 'System Admin Console';
+      case 'system_settings':
+        return 'Admin Settings';
+      default:
+        return 'UniGov Portal';
     }
   }
 }

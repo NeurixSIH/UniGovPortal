@@ -6,6 +6,7 @@ class ConsentModel {
   final String departmentId;
   final String serviceId;
   final List<String> dataFields;
+  final String purpose;
   final String status;
   final Timestamp grantedAt;
   final Timestamp expiresAt;
@@ -17,6 +18,7 @@ class ConsentModel {
     required this.departmentId,
     required this.serviceId,
     required this.dataFields,
+    this.purpose = '',
     required this.status,
     required this.grantedAt,
     required this.expiresAt,
@@ -24,6 +26,7 @@ class ConsentModel {
   });
 
   // Status constants
+  static const String statusPending = 'pending';
   static const String statusGranted = 'granted';
   static const String statusDenied = 'denied';
   static const String statusRevoked = 'revoked';
@@ -38,6 +41,7 @@ class ConsentModel {
               ?.map((e) => e.toString())
               .toList() ??
           [],
+      purpose: map['purpose'] ?? '',
       status: map['status'] ?? statusGranted,
       grantedAt: map['grantedAt'] is Timestamp
           ? map['grantedAt']
@@ -62,6 +66,7 @@ class ConsentModel {
       'departmentId': departmentId,
       'serviceId': serviceId,
       'dataFields': dataFields,
+      'purpose': purpose,
       'status': status,
       'grantedAt': grantedAt,
       'expiresAt': expiresAt,
@@ -75,6 +80,7 @@ class ConsentModel {
     String? departmentId,
     String? serviceId,
     List<String>? dataFields,
+    String? purpose,
     String? status,
     Timestamp? grantedAt,
     Timestamp? expiresAt,
@@ -86,6 +92,7 @@ class ConsentModel {
       departmentId: departmentId ?? this.departmentId,
       serviceId: serviceId ?? this.serviceId,
       dataFields: dataFields ?? this.dataFields,
+      purpose: purpose ?? this.purpose,
       status: status ?? this.status,
       grantedAt: grantedAt ?? this.grantedAt,
       expiresAt: expiresAt ?? this.expiresAt,

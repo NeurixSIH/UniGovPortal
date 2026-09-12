@@ -7,6 +7,9 @@ class NotificationModel {
   final String title;
   final String message;
   final String applicationId;
+  final String consentId;
+  final String departmentId;
+  final Map<String, dynamic> actionPayload;
   final bool isRead;
   final Timestamp createdAt;
 
@@ -17,6 +20,9 @@ class NotificationModel {
     required this.title,
     required this.message,
     required this.applicationId,
+    this.consentId = '',
+    this.departmentId = '',
+    this.actionPayload = const {},
     required this.isRead,
     required this.createdAt,
   });
@@ -35,6 +41,13 @@ class NotificationModel {
       title: map['title'] ?? '',
       message: map['message'] ?? '',
       applicationId: map['applicationId'] ?? '',
+      consentId: map['consentId'] ?? '',
+      departmentId: map['departmentId'] ?? '',
+      actionPayload: map['actionPayload'] is Map<String, dynamic>
+          ? Map<String, dynamic>.from(map['actionPayload'])
+          : (map['actionPayload'] is Map
+              ? Map<String, dynamic>.from(map['actionPayload'])
+              : <String, dynamic>{}),
       isRead: map['isRead'] is bool ? map['isRead'] : (map['isRead'] == 'true'),
       createdAt: map['createdAt'] is Timestamp
           ? map['createdAt']
@@ -54,6 +67,9 @@ class NotificationModel {
       'title': title,
       'message': message,
       'applicationId': applicationId,
+      'consentId': consentId,
+      'departmentId': departmentId,
+      'actionPayload': actionPayload,
       'isRead': isRead,
       'createdAt': createdAt,
     };
@@ -66,6 +82,9 @@ class NotificationModel {
     String? title,
     String? message,
     String? applicationId,
+    String? consentId,
+    String? departmentId,
+    Map<String, dynamic>? actionPayload,
     bool? isRead,
     Timestamp? createdAt,
   }) {
@@ -76,6 +95,9 @@ class NotificationModel {
       title: title ?? this.title,
       message: message ?? this.message,
       applicationId: applicationId ?? this.applicationId,
+      consentId: consentId ?? this.consentId,
+      departmentId: departmentId ?? this.departmentId,
+      actionPayload: actionPayload ?? this.actionPayload,
       isRead: isRead ?? this.isRead,
       createdAt: createdAt ?? this.createdAt,
     );

@@ -40,7 +40,24 @@ class DocumentService {
   }) async {
     await _documentsCollection.doc(documentId).update({
       'verified': verified,
+      'status': verified ? DocumentModel.statusVerified : DocumentModel.statusPending,
     });
+  }
+
+  /// Update document status to verified, pending, or rejected with optional reason
+  Future<void> updateDocumentStatus(
+    String documentId, {
+    required String status,
+    String? rejectionReason,
+  }) async {
+    final Map<String, dynamic> updates = {
+      'status': status,
+      'verified': status == DocumentModel.statusVerified,
+    };
+    if (rejectionReason != null) {
+      updates['rejectionReason'] = rejectionReason;
+    }
+    await _documentsCollection.doc(documentId).update(updates);
   }
 
   /// Delete a document record
@@ -70,6 +87,20 @@ class DocumentService {
   Stream<List<DocumentModel>> streamDocumentsByUser(String userId) {
     return _documentsCollection
         .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => DocumentModel.fromFirestore(doc))
+            .toList());
+  }
+
+  /// Stream documents of a specific status for a user ('verified', 'pending', 'rejected')
+  Stream<List<DocumentModel>> streamDocumentsByStatus(
+    String userId,
+    String status,
+  ) {
+    return _documentsCollection
+        .where('userId', isEqualTo: userId)
+        .where('status', isEqualTo: status)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => DocumentModel.fromFirestore(doc))

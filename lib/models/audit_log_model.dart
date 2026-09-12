@@ -9,6 +9,13 @@ class AuditLogModel {
   final Map<String, dynamic> dataChanged;
   final String performedBy;
   final Timestamp timestamp;
+  final String sourceDepartment;
+  final String targetDepartment;
+  final String fieldChanged;
+  final String oldValue;
+  final String newValue;
+  final String status; // 'Success', 'Failed', 'Pending'
+  final String category; // 'Profile', 'Address', 'Other'
 
   const AuditLogModel({
     required this.logId,
@@ -19,6 +26,13 @@ class AuditLogModel {
     required this.dataChanged,
     required this.performedBy,
     required this.timestamp,
+    this.sourceDepartment = '',
+    this.targetDepartment = '',
+    this.fieldChanged = '',
+    this.oldValue = '',
+    this.newValue = '',
+    this.status = statusSuccess,
+    this.category = categoryProfile,
   });
 
   // Action constants
@@ -30,6 +44,18 @@ class AuditLogModel {
   static const String actionApplicationStatusUpdated = 'application_status_updated';
   static const String actionConsentGranted = 'consent_granted';
   static const String actionConsentRevoked = 'consent_revoked';
+  static const String actionLiveSync = 'live_sync';
+
+  // Status constants
+  static const String statusSuccess = 'Success';
+  static const String statusFailed = 'Failed';
+  static const String statusPending = 'Pending';
+
+  // Category filter constants
+  static const String categoryAll = 'All';
+  static const String categoryProfile = 'Profile';
+  static const String categoryAddress = 'Address';
+  static const String categoryOther = 'Other';
 
   factory AuditLogModel.fromMap(Map<String, dynamic> map, {String? docId}) {
     return AuditLogModel(
@@ -47,6 +73,13 @@ class AuditLogModel {
       timestamp: map['timestamp'] is Timestamp
           ? map['timestamp']
           : Timestamp.now(),
+      sourceDepartment: map['sourceDepartment'] ?? '',
+      targetDepartment: map['targetDepartment'] ?? '',
+      fieldChanged: map['fieldChanged'] ?? '',
+      oldValue: map['oldValue']?.toString() ?? '',
+      newValue: map['newValue']?.toString() ?? '',
+      status: map['status'] ?? statusSuccess,
+      category: map['category'] ?? categoryProfile,
     );
   }
 
@@ -64,6 +97,13 @@ class AuditLogModel {
       'dataChanged': dataChanged,
       'performedBy': performedBy,
       'timestamp': timestamp,
+      'sourceDepartment': sourceDepartment,
+      'targetDepartment': targetDepartment,
+      'fieldChanged': fieldChanged,
+      'oldValue': oldValue,
+      'newValue': newValue,
+      'status': status,
+      'category': category,
     };
   }
 
@@ -76,6 +116,13 @@ class AuditLogModel {
     Map<String, dynamic>? dataChanged,
     String? performedBy,
     Timestamp? timestamp,
+    String? sourceDepartment,
+    String? targetDepartment,
+    String? fieldChanged,
+    String? oldValue,
+    String? newValue,
+    String? status,
+    String? category,
   }) {
     return AuditLogModel(
       logId: logId ?? this.logId,
@@ -86,6 +133,13 @@ class AuditLogModel {
       dataChanged: dataChanged ?? this.dataChanged,
       performedBy: performedBy ?? this.performedBy,
       timestamp: timestamp ?? this.timestamp,
+      sourceDepartment: sourceDepartment ?? this.sourceDepartment,
+      targetDepartment: targetDepartment ?? this.targetDepartment,
+      fieldChanged: fieldChanged ?? this.fieldChanged,
+      oldValue: oldValue ?? this.oldValue,
+      newValue: newValue ?? this.newValue,
+      status: status ?? this.status,
+      category: category ?? this.category,
     );
   }
 }
