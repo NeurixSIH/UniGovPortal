@@ -315,39 +315,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
             ],
           ),
 
-          // Center: Search Bar
-          Expanded(
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 420),
-                height: 38,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.search_rounded, size: 18, color: Colors.white70),
-                    const SizedBox(width: AppSpacing.s),
-                    Expanded(
-                      child: TextField(
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
-                        decoration: InputDecoration(
-                          hintText: 'Search services, documents or reference IDs...',
-                          hintStyle: AppTypography.bodySmall.copyWith(color: Colors.white60, fontSize: 13),
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          const Spacer(),
 
           // Right: Notifications, Language, Profile
           IconButton(
@@ -756,40 +724,6 @@ class SubViewScaffold extends StatelessWidget {
                             style: AppTypography.bodySmall.copyWith(fontSize: 11, color: Colors.white70),
                           ),
                         ],
-                      ),
-
-                      // Middle: Search Bar
-                      Expanded(
-                        child: Center(
-                          child: Container(
-                            constraints: const BoxConstraints(maxWidth: 420),
-                            height: 38,
-                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.search_rounded, size: 18, color: Colors.white70),
-                                const SizedBox(width: AppSpacing.s),
-                                Expanded(
-                                  child: TextField(
-                                    style: const TextStyle(color: Colors.white, fontSize: 13),
-                                    decoration: InputDecoration(
-                                      hintText: 'Search services, documents or reference IDs...',
-                                      hintStyle: AppTypography.bodySmall.copyWith(color: Colors.white60, fontSize: 13),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),
