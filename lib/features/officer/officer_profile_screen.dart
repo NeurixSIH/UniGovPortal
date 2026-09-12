@@ -9,15 +9,48 @@ import '../../core/widgets/app_button.dart';
 import '../../core/widgets/app_text_field.dart';
 import '../../core/widgets/modal_dialogs.dart';
 
-class OfficerProfileScreen extends StatelessWidget {
+class OfficerProfileScreen extends StatefulWidget {
   final VoidCallback onLogout;
 
   const OfficerProfileScreen({super.key, required this.onLogout});
 
   @override
+  State<OfficerProfileScreen> createState() => _OfficerProfileScreenState();
+}
+
+class _OfficerProfileScreenState extends State<OfficerProfileScreen> {
+  late TextEditingController _userIdCtrl;
+  late TextEditingController _emailCtrl;
+  late TextEditingController _phoneCtrl;
+  late TextEditingController _deptCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _userIdCtrl = TextEditingController();
+    _emailCtrl = TextEditingController();
+    _phoneCtrl = TextEditingController();
+    _deptCtrl = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _userIdCtrl.dispose();
+    _emailCtrl.dispose();
+    _phoneCtrl.dispose();
+    _deptCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = context.watch<AppStateProvider>();
     final officer = state.currentOfficer;
+
+    _userIdCtrl.text = officer?.userId ?? 'sdm_priya.verma';
+    _emailCtrl.text = officer?.email ?? 'priya.verma@gujarat.gov.in';
+    _phoneCtrl.text = officer?.phone ?? '+91 94280 11928';
+    _deptCtrl.text = officer?.departmentName ?? 'Revenue & Land Records';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.l),
@@ -82,7 +115,7 @@ class OfficerProfileScreen extends StatelessWidget {
                                 child: AppTextField(
                                   label: 'Officer User ID / Single Sign-On',
                                   readOnly: true,
-                                  controller: TextEditingController(text: officer?.userId ?? 'sdm_priya.verma'),
+                                  controller: _userIdCtrl,
                                   prefixIcon: const Icon(Icons.person_outline, size: 18),
                                 ),
                               ),
@@ -91,7 +124,7 @@ class OfficerProfileScreen extends StatelessWidget {
                                 child: AppTextField(
                                   label: 'Official Government Email',
                                   readOnly: true,
-                                  controller: TextEditingController(text: officer?.email ?? 'priya.verma@gujarat.gov.in'),
+                                  controller: _emailCtrl,
                                   prefixIcon: const Icon(Icons.email_outlined, size: 18),
                                 ),
                               ),
@@ -100,7 +133,7 @@ class OfficerProfileScreen extends StatelessWidget {
                                 child: AppTextField(
                                   label: 'Official Mobile Number',
                                   readOnly: true,
-                                  controller: TextEditingController(text: officer?.phone ?? '+91 94280 11928'),
+                                  controller: _phoneCtrl,
                                   prefixIcon: const Icon(Icons.phone_android_rounded, size: 18),
                                 ),
                               ),
@@ -109,7 +142,7 @@ class OfficerProfileScreen extends StatelessWidget {
                                 child: AppTextField(
                                   label: 'Assigned Department',
                                   readOnly: true,
-                                  controller: TextEditingController(text: officer?.departmentName ?? 'Revenue & Land Records'),
+                                  controller: _deptCtrl,
                                   prefixIcon: const Icon(Icons.business_rounded, size: 18),
                                 ),
                               ),
@@ -209,7 +242,7 @@ class OfficerProfileScreen extends StatelessWidget {
                         );
                         if (confirmed == true) {
                           state.logout();
-                          onLogout();
+                          widget.onLogout();
                         }
                       },
                     );

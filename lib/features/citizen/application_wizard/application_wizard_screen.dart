@@ -55,15 +55,38 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
   bool _isSubmitting = false;
   String? _generatedAppId;
 
+  late TextEditingController _wizFullNameCtrl;
+  late TextEditingController _wizAadhaarCtrl;
+  late TextEditingController _wizDobGenderCtrl;
+  late TextEditingController _wizMobileCtrl;
+  late TextEditingController _wizAddressCtrl;
+
   @override
   void initState() {
     super.initState();
+    final citizen = DemoData.citizenProfile;
+    _wizFullNameCtrl = TextEditingController(text: citizen['fullName']);
+    _wizAadhaarCtrl = TextEditingController(text: citizen['maskedAadhaar']);
+    _wizDobGenderCtrl = TextEditingController(text: '${citizen["dob"]} (${citizen["gender"]})');
+    _wizMobileCtrl = TextEditingController(text: citizen['mobile']);
+    _wizAddressCtrl = TextEditingController(text: citizen['address']);
+
     // Initialize default values for dynamic fields if any
     for (final field in widget.service.formFields) {
       if (field.defaultValue != null) {
         _formData[field.key] = field.defaultValue;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _wizFullNameCtrl.dispose();
+    _wizAadhaarCtrl.dispose();
+    _wizDobGenderCtrl.dispose();
+    _wizMobileCtrl.dispose();
+    _wizAddressCtrl.dispose();
+    super.dispose();
   }
 
   void _nextStep() {
@@ -275,8 +298,6 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
   // STEP 1: APPLICANT IDENTITY (Pre-filled e-KYC)
   // ==========================================
   Widget _buildStepApplicant() {
-    final citizen = DemoData.citizenProfile;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -315,7 +336,7 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
                   child: AppTextField(
                     label: 'Applicant Full Name',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['fullName']),
+                    controller: _wizFullNameCtrl,
                     prefixIcon: const Icon(Icons.verified_user_rounded, color: AppColors.success, size: 18),
                     helperText: 'Verified via Aadhaar Biometric / OTP Registry',
                   ),
@@ -325,7 +346,7 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
                   child: AppTextField(
                     label: 'Aadhaar Identification Number',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['maskedAadhaar']),
+                    controller: _wizAadhaarCtrl,
                     prefixIcon: const Icon(Icons.credit_card_rounded, size: 18),
                     helperText: 'Masked format for statutory privacy compliance',
                   ),
@@ -335,7 +356,7 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
                   child: AppTextField(
                     label: 'Date of Birth & Gender',
                     readOnly: true,
-                    controller: TextEditingController(text: '${citizen["dob"]} (${citizen["gender"]})'),
+                    controller: _wizDobGenderCtrl,
                     prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
                   ),
                 ),
@@ -344,7 +365,7 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
                   child: AppTextField(
                     label: 'Registered Mobile Number',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['mobile']),
+                    controller: _wizMobileCtrl,
                     prefixIcon: const Icon(Icons.phone_android_rounded, size: 18),
                     helperText: 'SMS alerts will be dispatched to this number',
                   ),
@@ -358,7 +379,7 @@ class _ApplicationWizardScreenState extends State<ApplicationWizardScreen> {
         AppTextField(
           label: 'Official Permanent Address',
           readOnly: true,
-          controller: TextEditingController(text: citizen['address']),
+          controller: _wizAddressCtrl,
           prefixIcon: const Icon(Icons.home_outlined, size: 18),
           maxLines: 2,
         ),

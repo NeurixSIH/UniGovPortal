@@ -395,6 +395,12 @@ class _MainShellScreenState extends State<MainShellScreen> {
               _citizenNavHistory.add(2);
             }
           }),
+          onOpenProfile: () => setState(() {
+            _citizenNavIndex = 4;
+            if (_citizenNavHistory.isEmpty || _citizenNavHistory.last != 4) {
+              _citizenNavHistory.add(4);
+            }
+          }),
         );
         break;
       case 1:

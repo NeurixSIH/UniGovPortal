@@ -22,8 +22,15 @@ class ServiceCatalogScreen extends StatefulWidget {
 }
 
 class _ServiceCatalogScreenState extends State<ServiceCatalogScreen> {
+  final _searchCtrl = TextEditingController();
   String _searchQuery = '';
   String _selectedDeptId = 'ALL';
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +137,7 @@ class _ServiceCatalogScreenState extends State<ServiceCatalogScreen> {
                       const SizedBox(width: AppSpacing.m),
                       Expanded(
                         child: TextField(
+                          controller: _searchCtrl,
                           onChanged: (val) => setState(() => _searchQuery = val),
                           decoration: InputDecoration(
                             hintText: 'Search service by name, keyword or document requirement...',
@@ -140,7 +148,10 @@ class _ServiceCatalogScreenState extends State<ServiceCatalogScreen> {
                             suffixIcon: _searchQuery.isNotEmpty
                                 ? IconButton(
                                     icon: const Icon(Icons.clear_rounded, size: 18),
-                                    onPressed: () => setState(() => _searchQuery = ''),
+                                    onPressed: () {
+                                      _searchCtrl.clear();
+                                      setState(() => _searchQuery = '');
+                                    },
                                   )
                                 : null,
                           ),

@@ -37,6 +37,18 @@ class _CitizenLoginScreenState extends State<CitizenLoginScreen> {
   String? _errorMessage;
 
   @override
+  void dispose() {
+    _fullNameCtrl.dispose();
+    _dobCtrl.dispose();
+    _addressCtrl.dispose();
+    _aadhaarCtrl.dispose();
+    _mobileCtrl.dispose();
+    _emailCtrl.dispose();
+    _otpCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = context.watch<AppStateProvider>();
 
@@ -64,7 +76,7 @@ class _CitizenLoginScreenState extends State<CitizenLoginScreen> {
                       height: 56,
                       width: 56,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) => const Icon(
+                      errorBuilder: (_, __, ___) => const Icon(
                         Icons.account_balance_rounded,
                         color: Colors.white,
                         size: 40,

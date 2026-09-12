@@ -17,6 +17,7 @@ class CitizenDashboardScreen extends StatelessWidget {
   final ValueChanged<String> onApplyService;
   final VoidCallback onBrowseAllServices;
   final VoidCallback onViewAllApplications;
+  final VoidCallback? onOpenProfile;
 
   const CitizenDashboardScreen({
     super.key,
@@ -24,6 +25,7 @@ class CitizenDashboardScreen extends StatelessWidget {
     required this.onApplyService,
     required this.onBrowseAllServices,
     required this.onViewAllApplications,
+    this.onOpenProfile,
   });
 
   @override
@@ -132,6 +134,8 @@ class CitizenDashboardScreen extends StatelessWidget {
       greeting = 'શુભ સવાર,';
     }
 
+    final unreadCount = state.unreadNotificationsCount;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.l),
@@ -171,10 +175,44 @@ class CitizenDashboardScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
-              )
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('You have $unreadCount unread notification(s).'),
+                          action: SnackBarAction(
+                            label: 'Mark All Read',
+                            onPressed: () => state.markAllNotificationsAsRead(),
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
+                    tooltip: 'Notifications',
+                  ),
+                  if (unreadCount > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: AppColors.danger,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
+                        child: Text(
+                          '$unreadCount',
+                          style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.m),
@@ -204,8 +242,10 @@ class CitizenDashboardScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: AppSpacing.s),
-                Text('80%', style: AppTypography.labelBold.copyWith(color: AppColors.primaryAccent)),
+                Text(
+                  '100% Verified',
+                  style: AppTypography.labelBold.copyWith(color: AppColors.success),
+                ),
               ],
             ),
           ),
@@ -222,52 +262,28 @@ class CitizenDashboardScreen extends StatelessWidget {
   }) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 650;
-
-        if (isMobile) {
-          // Use a Wrap for mobile to prevent aspect ratio issues
-          return Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(child: _StatCard(title: 'Pending Verification', count: pendingCount, icon: Icons.pending_actions_rounded, color: AppColors.info, bg: AppColors.infoLight)),
-                  const SizedBox(width: AppSpacing.s),
-                  Expanded(child: _StatCard(title: 'Under Officer Review', count: underReviewCount, icon: Icons.hourglass_top_rounded, color: const Color(0xFF6366F1), bg: const Color(0xFFEEF2FF))),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.s),
-              Row(
-                children: [
-                  Expanded(child: _StatCard(title: 'Approved / Issued', count: approvedCount, icon: Icons.verified_rounded, color: AppColors.success, bg: AppColors.successLight)),
-                  const SizedBox(width: AppSpacing.s),
-                  Expanded(child: _StatCard(title: 'Rejected / Returned', count: rejectedCount, icon: Icons.cancel_outlined, color: AppColors.danger, bg: AppColors.dangerLight)),
-                ],
-              ),
-            ],
-          );
-        }
-
+        final crossAxisCount = constraints.maxWidth < 600 ? 2 : 4;
         return GridView.count(
-          crossAxisCount: 4,
-          crossAxisSpacing: AppSpacing.m,
-          mainAxisSpacing: AppSpacing.m,
+          crossAxisCount: crossAxisCount,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: 2.0,
+          crossAxisSpacing: AppSpacing.m,
+          mainAxisSpacing: AppSpacing.m,
+          childAspectRatio: constraints.maxWidth < 600 ? 1.4 : 1.6,
           children: [
             _StatCard(
               title: 'Pending Verification',
               count: pendingCount,
-              icon: Icons.pending_actions_rounded,
-              color: AppColors.info,
-              bg: AppColors.infoLight,
+              icon: Icons.hourglass_top_rounded,
+              color: const Color(0xFFD97706),
+              bg: const Color(0xFFFFFBEB),
             ),
             _StatCard(
-              title: 'Under Officer Review',
+              title: 'Under Review',
               count: underReviewCount,
-              icon: Icons.hourglass_top_rounded,
-              color: const Color(0xFF6366F1),
-              bg: const Color(0xFFEEF2FF),
+              icon: Icons.fact_check_rounded,
+              color: AppColors.primary,
+              bg: AppColors.primarySurface,
             ),
             _StatCard(
               title: 'Approved / Issued',
@@ -277,9 +293,9 @@ class CitizenDashboardScreen extends StatelessWidget {
               bg: AppColors.successLight,
             ),
             _StatCard(
-              title: 'Rejected / Returned',
+              title: 'Rejected / Grounded',
               count: rejectedCount,
-              icon: Icons.cancel_outlined,
+              icon: Icons.cancel_rounded,
               color: AppColors.danger,
               bg: AppColors.dangerLight,
             ),
@@ -296,24 +312,17 @@ class CitizenDashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Quick Actions', style: AppTypography.h3),
-                const Icon(Icons.settings_suggest_rounded, color: AppColors.primary),
-              ],
-            ),
+            Text('Quick e-Services Actions', style: AppTypography.h3),
             const SizedBox(height: AppSpacing.m),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: _QuickActionBtn(
-                    icon: Icons.add_business_rounded,
+                    icon: Icons.add_circle_outline_rounded,
                     label: 'Apply for\nService',
                     onTap: onBrowseAllServices,
-                    color: AppColors.secondary,
-                    bgColor: AppColors.secondaryLight,
+                    color: AppColors.primary,
+                    bgColor: AppColors.primarySurface,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.s),
@@ -341,7 +350,7 @@ class CitizenDashboardScreen extends StatelessWidget {
                   child: _QuickActionBtn(
                     icon: Icons.admin_panel_settings_rounded,
                     label: 'Manage\nConsent',
-                    onTap: () {},
+                    onTap: onOpenProfile ?? onViewAllApplications,
                     color: const Color(0xFF059669),
                     bgColor: const Color(0xFFECFDF5),
                   ),
