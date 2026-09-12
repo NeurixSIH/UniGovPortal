@@ -19,8 +19,16 @@ class OfficerLoginScreen extends StatefulWidget {
 class _OfficerLoginScreenState extends State<OfficerLoginScreen> {
   final _userIdCtrl = TextEditingController(text: 'sdm_priya.verma');
   final _passwordCtrl = TextEditingController(text: 'GovSecure@2026');
+  bool _obscurePassword = true;
   bool _isLoading = false;
   String? _error;
+
+  @override
+  void dispose() {
+    _userIdCtrl.dispose();
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,9 +148,17 @@ class _OfficerLoginScreenState extends State<OfficerLoginScreen> {
                           label: 'Department Portal Password',
                           hint: '••••••••••••',
                           controller: _passwordCtrl,
-                          obscureText: true,
+                          obscureText: _obscurePassword,
                           isRequired: true,
                           prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20, color: AppColors.primary),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                              size: 20,
+                              color: AppColors.textSecondary,
+                            ),
+                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.xl),
 

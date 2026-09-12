@@ -88,7 +88,7 @@ class ModalDialogs {
 
     return showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => StatefulBuilder(
+      builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) {
           final isSendEnabled = messageCtrl.text.trim().isNotEmpty;
 
@@ -200,7 +200,10 @@ class ModalDialogs {
                           child: AppButton(
                             label: 'Cancel',
                             variant: AppButtonVariant.outline,
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () {
+                              messageCtrl.dispose();
+                              Navigator.of(dialogContext).pop();
+                            },
                           ),
                         ),
                         const SizedBox(width: AppSpacing.m),
@@ -211,11 +214,13 @@ class ModalDialogs {
                             leadingIcon: Icons.send_rounded,
                             onPressed: isSendEnabled
                                 ? () {
-                                    Navigator.of(context).pop({
+                                    final res = {
                                       'category': selectedCategory,
                                       'docId': selectedDocId,
                                       'message': messageCtrl.text.trim(),
-                                    });
+                                    };
+                                    messageCtrl.dispose();
+                                    Navigator.of(dialogContext).pop(res);
                                   }
                                 : null,
                           ),
@@ -241,7 +246,7 @@ class ModalDialogs {
 
     return showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
         contentPadding: const EdgeInsets.all(AppSpacing.l),
@@ -282,7 +287,10 @@ class ModalDialogs {
                       child: AppButton(
                         label: 'Cancel',
                         variant: AppButtonVariant.outline,
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          remarksCtrl.dispose();
+                          Navigator.of(dialogContext).pop();
+                        },
                       ),
                     ),
                     const SizedBox(width: AppSpacing.m),
@@ -292,7 +300,9 @@ class ModalDialogs {
                         variant: AppButtonVariant.success,
                         leadingIcon: Icons.check_circle_rounded,
                         onPressed: () {
-                          Navigator.of(context).pop(remarksCtrl.text.trim());
+                          final text = remarksCtrl.text.trim();
+                          remarksCtrl.dispose();
+                          Navigator.of(dialogContext).pop(text);
                         },
                       ),
                     ),
@@ -316,7 +326,7 @@ class ModalDialogs {
 
     return showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => StatefulBuilder(
+      builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) {
           final isRejectEnabled = remarksCtrl.text.trim().isNotEmpty;
 
@@ -409,7 +419,10 @@ class ModalDialogs {
                           child: AppButton(
                             label: 'Cancel',
                             variant: AppButtonVariant.outline,
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () {
+                              remarksCtrl.dispose();
+                              Navigator.of(dialogContext).pop();
+                            },
                           ),
                         ),
                         const SizedBox(width: AppSpacing.m),
@@ -420,10 +433,12 @@ class ModalDialogs {
                             leadingIcon: Icons.block_rounded,
                             onPressed: isRejectEnabled
                                 ? () {
-                                    Navigator.of(context).pop({
+                                    final res = {
                                       'category': selectedCategory,
                                       'remarks': remarksCtrl.text.trim(),
-                                    });
+                                    };
+                                    remarksCtrl.dispose();
+                                    Navigator.of(dialogContext).pop(res);
                                   }
                                 : null,
                           ),
@@ -440,3 +455,4 @@ class ModalDialogs {
     );
   }
 }
+

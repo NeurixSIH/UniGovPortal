@@ -22,6 +22,33 @@ class CitizenProfileScreen extends StatefulWidget {
 class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
   int? _activeSection; // null: Main Settings List, 1: Profile, 2: Eligible Schemes, 3: Language, 4: Consent, 5: Notifications, 6: Security
 
+  late TextEditingController _aadhaarCtrl;
+  late TextEditingController _dobCtrl;
+  late TextEditingController _mobileCtrl;
+  late TextEditingController _emailCtrl;
+  late TextEditingController _addressCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    final citizen = DemoData.citizenProfile;
+    _aadhaarCtrl = TextEditingController(text: citizen['maskedAadhaar'] ?? 'XXXX XXXX 8924');
+    _dobCtrl = TextEditingController(text: citizen['dob'] ?? '14/08/1988');
+    _mobileCtrl = TextEditingController(text: citizen['mobile'] ?? '+91 98765 43210');
+    _emailCtrl = TextEditingController(text: citizen['email'] ?? 'rajesh.sharma@example.com');
+    _addressCtrl = TextEditingController(text: citizen['address'] ?? 'Flat 402, Shanti Vihar, Sector 12, Gandhinagar, Gujarat - 382016');
+  }
+
+  @override
+  void dispose() {
+    _aadhaarCtrl.dispose();
+    _dobCtrl.dispose();
+    _mobileCtrl.dispose();
+    _emailCtrl.dispose();
+    _addressCtrl.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppStateProvider>();
@@ -494,7 +521,11 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
           title: Text('Active Session Logs', style: AppTypography.labelBold),
           subtitle: Text('Windows PC • Chrome browser • IP: 103.24.12.98 (Active Now)', style: AppTypography.bodySmall),
           trailing: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Active session logged out and security token revoked.')),
+              );
+            },
             child: const Text('Revoke'),
           ),
         ),
@@ -819,7 +850,7 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
                   child: AppTextField(
                     label: 'Masked Aadhaar Number',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['maskedAadhaar']),
+                    controller: _aadhaarCtrl,
                     prefixIcon: const Icon(Icons.credit_card_rounded, size: 18),
                   ),
                 ),
@@ -828,7 +859,7 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
                   child: AppTextField(
                     label: 'Date of Birth',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['dob']),
+                    controller: _dobCtrl,
                     prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
                   ),
                 ),
@@ -837,7 +868,7 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
                   child: AppTextField(
                     label: 'Registered Mobile Number',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['mobile']),
+                    controller: _mobileCtrl,
                     prefixIcon: const Icon(Icons.phone_iphone_rounded, size: 18),
                   ),
                 ),
@@ -846,7 +877,7 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
                   child: AppTextField(
                     label: 'Official Email ID',
                     readOnly: true,
-                    controller: TextEditingController(text: citizen['email']),
+                    controller: _emailCtrl,
                     prefixIcon: const Icon(Icons.email_outlined, size: 18),
                   ),
                 ),
@@ -859,7 +890,7 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
         AppTextField(
           label: 'Primary Domicile Address',
           readOnly: true,
-          controller: TextEditingController(text: citizen['address']),
+          controller: _addressCtrl,
           prefixIcon: const Icon(Icons.home_outlined, size: 18),
           maxLines: 2,
         ),
@@ -899,6 +930,27 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
           localName: 'ગુજરાતી (Gujarati)',
           isSelected: current == 'Gujarati',
           onTap: () => state.setLanguage('Gujarati'),
+        ),
+        const SizedBox(height: AppSpacing.m),
+        _LanguageCard(
+          name: 'Marathi',
+          localName: 'मराठी (Marathi)',
+          isSelected: current == 'Marathi',
+          onTap: () => state.setLanguage('Marathi'),
+        ),
+        const SizedBox(height: AppSpacing.m),
+        _LanguageCard(
+          name: 'Tamil',
+          localName: 'தமிழ் (Tamil)',
+          isSelected: current == 'Tamil',
+          onTap: () => state.setLanguage('Tamil'),
+        ),
+        const SizedBox(height: AppSpacing.m),
+        _LanguageCard(
+          name: 'Bengali',
+          localName: 'বাংলা (Bengali)',
+          isSelected: current == 'Bengali',
+          onTap: () => state.setLanguage('Bengali'),
         ),
       ],
     );

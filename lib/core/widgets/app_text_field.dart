@@ -18,6 +18,8 @@ class AppTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? prefixText;
   final bool isRequired;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   const AppTextField({
     super.key,
@@ -35,6 +37,8 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.prefixText,
     this.isRequired = false,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   @override
@@ -62,9 +66,11 @@ class AppTextField extends StatelessWidget {
         TextField(
           controller: controller,
           onChanged: onChanged,
+          onSubmitted: onSubmitted,
           obscureText: obscureText,
           readOnly: readOnly,
           keyboardType: keyboardType,
+          textInputAction: textInputAction,
           maxLines: maxLines,
           style: AppTypography.bodyMedium.copyWith(color: AppColors.textPrimary),
           decoration: InputDecoration(
@@ -85,3 +91,4 @@ class AppTextField extends StatelessWidget {
     );
   }
 }
+

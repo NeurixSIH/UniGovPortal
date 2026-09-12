@@ -36,6 +36,12 @@ class _InfoRequiredScreenState extends State<InfoRequiredScreen> {
   bool _isSubmitting = false;
 
   @override
+  void dispose() {
+    _citizenRemarksCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.l),

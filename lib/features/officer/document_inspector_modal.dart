@@ -54,6 +54,12 @@ class _DocumentInspectorModalState extends State<DocumentInspectorModal> {
   }
 
   @override
+  void dispose() {
+    _commentCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: AppColors.surface,
