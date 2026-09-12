@@ -45,6 +45,8 @@ class AppStateProvider extends ChangeNotifier {
   String? get selectedOfficerId => _selectedOfficerId;
 
   int get unreadNotificationsCount => _notifications.where((n) => !n.isRead).length;
+  int get draftApplicationsCount => _applications.where((a) => a.status == AppStatus.draft).length;
+  List<ApplicationModel> get draftApplications => _applications.where((a) => a.status == AppStatus.draft).toList();
 
   OfficerModel? get currentOfficer {
     try {
@@ -127,6 +129,21 @@ class AppStateProvider extends ChangeNotifier {
       ),
     );
     _selectedApplicationId = newApp.id;
+    notifyListeners();
+  }
+
+  void saveDraftApplication(ApplicationModel draftApp) {
+    final index = _applications.indexWhere((a) => a.id == draftApp.id);
+    if (index != -1) {
+      _applications[index] = draftApp;
+    } else {
+      _applications.insert(0, draftApp);
+    }
+    notifyListeners();
+  }
+
+  void deleteDraftApplication(String draftId) {
+    _applications.removeWhere((a) => a.id == draftId);
     notifyListeners();
   }
 

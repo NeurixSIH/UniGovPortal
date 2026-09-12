@@ -15,6 +15,7 @@ import 'features/auth/officer_login_screen.dart';
 import 'features/citizen/application_wizard/application_wizard_screen.dart';
 import 'features/citizen/citizen_dashboard_screen.dart';
 import 'features/citizen/documents/my_documents_screen.dart';
+import 'features/citizen/drafts/saved_drafts_screen.dart';
 import 'features/citizen/history/application_history_screen.dart';
 import 'features/citizen/profile/citizen_profile_screen.dart';
 import 'features/citizen/service_catalog_screen.dart';
@@ -91,12 +92,14 @@ class _MainShellScreenState extends State<MainShellScreen> {
   bool _isViewingCertificate = false;
   bool _isViewingRejection = false;
   bool _isResolvingInfoRequired = false;
+  bool _isViewingSavedDrafts = false;
 
   // Officer sub-view
   String? _activeOfficerReviewAppId;
 
   bool _canPopRoot(AppStateProvider state) {
-    if (_isViewingCertificate ||
+    if (_isViewingSavedDrafts ||
+        _isViewingCertificate ||
         _isViewingRejection ||
         _isResolvingInfoRequired ||
         _activeTrackingAppId != null ||
@@ -116,6 +119,10 @@ class _MainShellScreenState extends State<MainShellScreen> {
   }
 
   bool _handleBackNavigation(AppStateProvider state) {
+    if (_isViewingSavedDrafts) {
+      setState(() => _isViewingSavedDrafts = false);
+      return true;
+    }
     if (_isViewingCertificate) {
       setState(() => _isViewingCertificate = false);
       return true;
@@ -249,6 +256,23 @@ class _MainShellScreenState extends State<MainShellScreen> {
   // CITIZEN SHELL & SUB-VIEWS
   // ==========================================
   Widget _buildCitizenShell(AppStateProvider state) {
+    // 0. Saved Drafts Sub-view
+    if (_isViewingSavedDrafts) {
+      return SubViewScaffold(
+        title: 'Saved Draft Applications',
+        onBack: () => _handleBackNavigation(state),
+        body: SavedDraftsScreen(
+          onBack: () => _handleBackNavigation(state),
+          onResumeDraft: (serviceId) {
+            setState(() {
+              _isViewingSavedDrafts = false;
+              _activeWizardServiceId = serviceId;
+            });
+          },
+        ),
+      );
+    }
+
     // 1. Wizard Sub-view
     if (_activeWizardServiceId != null) {
       final srv = state.services.firstWhere(
@@ -382,6 +406,7 @@ class _MainShellScreenState extends State<MainShellScreen> {
       case 0:
         title = 'Citizen Services Dashboard';
         body = CitizenDashboardScreen(
+          onOpenSavedDrafts: () => setState(() => _isViewingSavedDrafts = true),
           onOpenApplication: (appId) => setState(() => _activeTrackingAppId = appId),
           onApplyService: (srvId) => setState(() => _activeWizardServiceId = srvId),
           onBrowseAllServices: () => setState(() {

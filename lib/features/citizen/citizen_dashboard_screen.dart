@@ -18,6 +18,7 @@ class CitizenDashboardScreen extends StatelessWidget {
   final VoidCallback onBrowseAllServices;
   final VoidCallback onViewAllApplications;
   final ValueChanged<String>? onViewAllApplicationsWithFilter;
+  final VoidCallback? onOpenSavedDrafts;
   final VoidCallback? onOpenProfile;
 
   const CitizenDashboardScreen({
@@ -27,6 +28,7 @@ class CitizenDashboardScreen extends StatelessWidget {
     required this.onBrowseAllServices,
     required this.onViewAllApplications,
     this.onViewAllApplicationsWithFilter,
+    this.onOpenSavedDrafts,
     this.onOpenProfile,
   });
 
@@ -136,7 +138,8 @@ class CitizenDashboardScreen extends StatelessWidget {
       greeting = 'શુભ સવાર,';
     }
 
-    final unreadCount = state.unreadNotificationsCount;
+    final draftCount = state.draftApplicationsCount;
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Container(
       width: double.infinity,
@@ -177,43 +180,58 @@ class CitizenDashboardScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('You have $unreadCount unread notification(s).'),
-                          action: SnackBarAction(
-                            label: 'Mark All Read',
-                            onPressed: () => state.markAllNotificationsAsRead(),
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
-                    tooltip: 'Notifications',
-                  ),
-                  if (unreadCount > 0)
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: AppColors.danger,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
-                        child: Text(
-                          '$unreadCount',
-                          style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+              // Saved Drafts button
+              Tooltip(
+                message: 'Saved Drafts ($draftCount)',
+                child: InkWell(
+                  onTap: onOpenSavedDrafts,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 8 : 12,
+                      vertical: isMobile ? 6 : 7,
                     ),
-                ],
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.edit_note_rounded, color: Colors.white, size: 20),
+                        if (!isMobile) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            'Saved Drafts',
+                            style: AppTypography.labelBold.copyWith(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                        if (draftCount > 0) ...[
+                          SizedBox(width: isMobile ? 4 : 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFBBF24),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              '$draftCount',
+                              style: const TextStyle(
+                                color: Color(0xFF78350F),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -358,9 +376,9 @@ class CitizenDashboardScreen extends StatelessWidget {
                 const SizedBox(width: AppSpacing.s),
                 Expanded(
                   child: _QuickActionBtn(
-                    icon: Icons.upload_file_rounded,
-                    label: 'Upload\nDocument',
-                    onTap: onViewAllApplications,
+                    icon: Icons.edit_note_rounded,
+                    label: 'Saved\nDrafts',
+                    onTap: onOpenSavedDrafts ?? onViewAllApplications,
                     color: const Color(0xFF6366F1),
                     bgColor: const Color(0xFFEEF2FF),
                   ),
