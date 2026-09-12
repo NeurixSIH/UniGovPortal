@@ -17,6 +17,7 @@ class CitizenDashboardScreen extends StatelessWidget {
   final ValueChanged<String> onApplyService;
   final VoidCallback onBrowseAllServices;
   final VoidCallback onViewAllApplications;
+  final ValueChanged<String>? onViewAllApplicationsWithFilter;
   final VoidCallback? onOpenProfile;
 
   const CitizenDashboardScreen({
@@ -25,6 +26,7 @@ class CitizenDashboardScreen extends StatelessWidget {
     required this.onApplyService,
     required this.onBrowseAllServices,
     required this.onViewAllApplications,
+    this.onViewAllApplicationsWithFilter,
     this.onOpenProfile,
   });
 
@@ -277,6 +279,13 @@ class CitizenDashboardScreen extends StatelessWidget {
               icon: Icons.hourglass_top_rounded,
               color: const Color(0xFFD97706),
               bg: const Color(0xFFFFFBEB),
+              onTap: () {
+                if (onViewAllApplicationsWithFilter != null) {
+                  onViewAllApplicationsWithFilter!('PENDING');
+                } else {
+                  onViewAllApplications();
+                }
+              },
             ),
             _StatCard(
               title: 'Under Review',
@@ -284,6 +293,13 @@ class CitizenDashboardScreen extends StatelessWidget {
               icon: Icons.fact_check_rounded,
               color: AppColors.primary,
               bg: AppColors.primarySurface,
+              onTap: () {
+                if (onViewAllApplicationsWithFilter != null) {
+                  onViewAllApplicationsWithFilter!('PENDING');
+                } else {
+                  onViewAllApplications();
+                }
+              },
             ),
             _StatCard(
               title: 'Approved / Issued',
@@ -291,6 +307,13 @@ class CitizenDashboardScreen extends StatelessWidget {
               icon: Icons.verified_rounded,
               color: AppColors.success,
               bg: AppColors.successLight,
+              onTap: () {
+                if (onViewAllApplicationsWithFilter != null) {
+                  onViewAllApplicationsWithFilter!('APPROVED');
+                } else {
+                  onViewAllApplications();
+                }
+              },
             ),
             _StatCard(
               title: 'Rejected / Grounded',
@@ -298,6 +321,13 @@ class CitizenDashboardScreen extends StatelessWidget {
               icon: Icons.cancel_rounded,
               color: AppColors.danger,
               bg: AppColors.dangerLight,
+              onTap: () {
+                if (onViewAllApplicationsWithFilter != null) {
+                  onViewAllApplicationsWithFilter!('REJECTED');
+                } else {
+                  onViewAllApplications();
+                }
+              },
             ),
           ],
         );
@@ -607,6 +637,7 @@ class _StatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final Color bg;
+  final VoidCallback? onTap;
 
   const _StatCard({
     required this.title,
@@ -614,40 +645,61 @@ class _StatCard extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.bg,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s, vertical: AppSpacing.s),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
-              child: Icon(icon, color: color, size: 18),
-            ),
-            const SizedBox(width: AppSpacing.s),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '$count',
-                    style: AppTypography.h2.copyWith(fontWeight: FontWeight.w800, fontSize: 18),
-                  ),
-                  Text(
-                    title,
-                    style: AppTypography.bodySmall.copyWith(fontSize: 10),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+      elevation: 0,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        side: BorderSide(
+          color: AppColors.border.withValues(alpha: 0.8),
+          width: 1,
+        ),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        hoverColor: color.withValues(alpha: 0.06),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m, vertical: AppSpacing.s),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+                child: Icon(icon, color: color, size: 18),
               ),
-            ),
-          ],
+              const SizedBox(width: AppSpacing.s),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$count',
+                      style: AppTypography.h2.copyWith(fontWeight: FontWeight.w800, fontSize: 18),
+                    ),
+                    Text(
+                      title,
+                      style: AppTypography.bodySmall.copyWith(fontSize: 11, color: AppColors.textSecondary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              if (onTap != null)
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 11,
+                  color: AppColors.textMuted.withValues(alpha: 0.5),
+                ),
+            ],
+          ),
         ),
       ),
     );

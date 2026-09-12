@@ -12,10 +12,12 @@ import '../../../core/widgets/status_badge.dart';
 
 class ApplicationHistoryScreen extends StatefulWidget {
   final ValueChanged<String> onSelectApplication;
+  final String? initialFilterTab;
 
   const ApplicationHistoryScreen({
     super.key,
     required this.onSelectApplication,
+    this.initialFilterTab,
   });
 
   @override
@@ -24,7 +26,23 @@ class ApplicationHistoryScreen extends StatefulWidget {
 
 class _ApplicationHistoryScreenState extends State<ApplicationHistoryScreen> {
   String _searchQuery = '';
-  String _filterTab = 'ALL'; // ALL, PENDING, APPROVED, REJECTED, ACTION_REQUIRED
+  late String _filterTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _filterTab = widget.initialFilterTab ?? 'ALL';
+  }
+
+  @override
+  void didUpdateWidget(ApplicationHistoryScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialFilterTab != null && widget.initialFilterTab != oldWidget.initialFilterTab) {
+      setState(() {
+        _filterTab = widget.initialFilterTab!;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +115,9 @@ class _ApplicationHistoryScreenState extends State<ApplicationHistoryScreen> {
                     children: [
                       _StatusChip(label: 'All', count: allApps.length, isSelected: _filterTab == 'ALL', onTap: () => setState(() => _filterTab = 'ALL')),
                       const SizedBox(width: AppSpacing.s),
-                      _StatusChip(label: 'Pending', count: allApps.where((a) => a.status == AppStatus.submitted || a.status == AppStatus.underReview).length, isSelected: _filterTab == 'PENDING', onTap: () => setState(() => _filterTab = 'PENDING'), color: const Color(0xFF67E8F9)),
+                      _StatusChip(label: 'Pending', count: allApps.where((a) => a.status == AppStatus.submitted || a.status == AppStatus.documentsUnderVerification || a.status == AppStatus.underReview || a.status == AppStatus.resubmitted).length, isSelected: _filterTab == 'PENDING', onTap: () => setState(() => _filterTab = 'PENDING'), color: const Color(0xFF67E8F9)),
                       const SizedBox(width: AppSpacing.s),
-                      _StatusChip(label: 'Approved', count: allApps.where((a) => a.status == AppStatus.approved || a.status == AppStatus.completed).length, isSelected: _filterTab == 'APPROVED', onTap: () => setState(() => _filterTab = 'APPROVED'), color: const Color(0xFF86EFAC)),
+                      _StatusChip(label: 'Approved', count: allApps.where((a) => a.status == AppStatus.approved || a.status == AppStatus.certificateGenerated || a.status == AppStatus.completed).length, isSelected: _filterTab == 'APPROVED', onTap: () => setState(() => _filterTab = 'APPROVED'), color: const Color(0xFF86EFAC)),
                       const SizedBox(width: AppSpacing.s),
                       _StatusChip(label: 'Rejected', count: allApps.where((a) => a.status == AppStatus.rejected).length, isSelected: _filterTab == 'REJECTED', onTap: () => setState(() => _filterTab = 'REJECTED'), color: const Color(0xFFFCA5A5)),
                     ],

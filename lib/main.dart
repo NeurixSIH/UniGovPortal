@@ -75,6 +75,7 @@ class MainShellScreen extends StatefulWidget {
 class _MainShellScreenState extends State<MainShellScreen> {
   // Navigation tabs for each role
   int _citizenNavIndex = 0;
+  String _citizenHistoryFilterTab = 'ALL';
   int _officerNavIndex = 0;
   int _adminNavIndex = 0;
 
@@ -390,6 +391,14 @@ class _MainShellScreenState extends State<MainShellScreen> {
             }
           }),
           onViewAllApplications: () => setState(() {
+            _citizenHistoryFilterTab = 'ALL';
+            _citizenNavIndex = 2;
+            if (_citizenNavHistory.isEmpty || _citizenNavHistory.last != 2) {
+              _citizenNavHistory.add(2);
+            }
+          }),
+          onViewAllApplicationsWithFilter: (tab) => setState(() {
+            _citizenHistoryFilterTab = tab;
             _citizenNavIndex = 2;
             if (_citizenNavHistory.isEmpty || _citizenNavHistory.last != 2) {
               _citizenNavHistory.add(2);
@@ -413,6 +422,7 @@ class _MainShellScreenState extends State<MainShellScreen> {
       case 2:
         title = 'My Application History & Records';
         body = ApplicationHistoryScreen(
+          initialFilterTab: _citizenHistoryFilterTab,
           onSelectApplication: (appId) => setState(() => _activeTrackingAppId = appId),
         );
         break;
