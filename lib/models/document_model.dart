@@ -8,6 +8,8 @@ class DocumentModel {
   final String fileUrl;
   final Map<String, dynamic> documentData;
   final bool verified;
+  final String status; // 'verified', 'pending', 'rejected'
+  final String? rejectionReason;
   final String issuedBy;
   final Timestamp issuedAt;
   final Timestamp uploadedAt;
@@ -20,6 +22,8 @@ class DocumentModel {
     required this.fileUrl,
     required this.documentData,
     required this.verified,
+    this.status = statusPending,
+    this.rejectionReason,
     required this.issuedBy,
     required this.issuedAt,
     required this.uploadedAt,
@@ -34,7 +38,21 @@ class DocumentModel {
   static const String docTypeDomicileCertificate = 'Domicile Certificate';
   static const String docTypeBirthCertificate = 'Birth Certificate';
 
+  // Status constants
+  static const String statusVerified = 'verified';
+  static const String statusPending = 'pending';
+  static const String statusRejected = 'rejected';
+
+  bool get isVerified => status == statusVerified || verified;
+
   factory DocumentModel.fromMap(Map<String, dynamic> map, {String? docId}) {
+    final bool rawVerified = map['verified'] is bool
+        ? map['verified']
+        : (map['verified'] == 'true');
+    final String resolvedStatus = map['status'] != null
+        ? ((map['status'] == statusPending && rawVerified) ? statusVerified : map['status'])
+        : (rawVerified ? statusVerified : statusPending);
+
     return DocumentModel(
       documentId: map['documentId'] ?? docId ?? '',
       userId: map['userId'] ?? '',
@@ -46,7 +64,9 @@ class DocumentModel {
           : (map['documentData'] is Map
               ? Map<String, dynamic>.from(map['documentData'])
               : {}),
-      verified: map['verified'] is bool ? map['verified'] : (map['verified'] == 'true'),
+      verified: resolvedStatus == statusVerified || rawVerified,
+      status: resolvedStatus,
+      rejectionReason: map['rejectionReason'] as String?,
       issuedBy: map['issuedBy'] ?? '',
       issuedAt: map['issuedAt'] is Timestamp
           ? map['issuedAt']
@@ -62,6 +82,7 @@ class DocumentModel {
   }
 
   Map<String, dynamic> toMap() {
+    final effStatus = (status == statusPending && verified) ? statusVerified : status;
     return {
       'documentId': documentId,
       'userId': userId,
@@ -69,7 +90,9 @@ class DocumentModel {
       'documentNumber': documentNumber,
       'fileUrl': fileUrl,
       'documentData': documentData,
-      'verified': verified,
+      'verified': isVerified,
+      'status': effStatus,
+      if (rejectionReason != null) 'rejectionReason': rejectionReason,
       'issuedBy': issuedBy,
       'issuedAt': issuedAt,
       'uploadedAt': uploadedAt,
@@ -84,10 +107,13 @@ class DocumentModel {
     String? fileUrl,
     Map<String, dynamic>? documentData,
     bool? verified,
+    String? status,
+    String? rejectionReason,
     String? issuedBy,
     Timestamp? issuedAt,
     Timestamp? uploadedAt,
   }) {
+    final newStatus = status ?? this.status;
     return DocumentModel(
       documentId: documentId ?? this.documentId,
       userId: userId ?? this.userId,
@@ -95,7 +121,9 @@ class DocumentModel {
       documentNumber: documentNumber ?? this.documentNumber,
       fileUrl: fileUrl ?? this.fileUrl,
       documentData: documentData ?? this.documentData,
-      verified: verified ?? this.verified,
+      verified: verified ?? (newStatus == statusVerified),
+      status: newStatus,
+      rejectionReason: rejectionReason ?? this.rejectionReason,
       issuedBy: issuedBy ?? this.issuedBy,
       issuedAt: issuedAt ?? this.issuedAt,
       uploadedAt: uploadedAt ?? this.uploadedAt,

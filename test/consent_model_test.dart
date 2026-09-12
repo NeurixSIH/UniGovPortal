@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uni_gov_portal/models/consent_model.dart';
+import 'package:citizen_connect/models/consent_model.dart';
 
 void main() {
   group('ConsentModel Tests', () {

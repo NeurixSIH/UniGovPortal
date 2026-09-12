@@ -9,11 +9,27 @@ class ApplicationService {
   final CollectionReference<Map<String, dynamic>> _applicationsCollection =
       FirebaseFirestore.instance.collection('applications');
 
-  /// Add or set an application document in Firestore
+  /// Add or set an application document in Firestore with initial timeline
   Future<void> addApplication(ApplicationModel application) async {
+    ApplicationModel appToSave = application;
+    if (appToSave.timeline.isEmpty) {
+      appToSave = appToSave.copyWith(
+        timeline: [
+          {
+            'stage': 'Submitted',
+            'status': application.status,
+            'remarks': application.remarks.isNotEmpty
+                ? application.remarks
+                : 'Application submitted successfully',
+            'timestamp': application.submittedAt,
+            'processedBy': application.userId,
+          }
+        ],
+      );
+    }
     await _applicationsCollection
-        .doc(application.applicationId)
-        .set(application.toMap());
+        .doc(appToSave.applicationId)
+        .set(appToSave.toMap());
   }
 
   /// Get an application by applicationId
@@ -34,20 +50,92 @@ class ApplicationService {
     await _applicationsCollection.doc(applicationId).update(updates);
   }
 
-  /// Update application status, remarks, and processor
+  /// Helper to convert status code to human readable timeline stage
+  static String mapStatusToStage(String status) {
+    switch (status) {
+      case ApplicationModel.statusSubmitted:
+        return 'Submitted';
+      case ApplicationModel.statusUnderReview:
+        return 'Under Review';
+      case ApplicationModel.statusDocumentsRequired:
+        return 'Documents Required';
+      case ApplicationModel.statusApproved:
+        return 'Approved';
+      case ApplicationModel.statusCompleted:
+        return 'Completed';
+      case ApplicationModel.statusRejected:
+        return 'Rejected';
+      default:
+        return 'Updated';
+    }
+  }
+
+  /// Update application status, remarks, processor, and append to timeline history
   Future<void> updateApplicationStatus(
     String applicationId, {
     required String status,
     String? remarks,
     String? processedBy,
   }) async {
+    final now = Timestamp.now();
+    final timelineEntry = {
+      'stage': mapStatusToStage(status),
+      'status': status,
+      'remarks': remarks ?? '',
+      'timestamp': now,
+      'processedBy': processedBy ?? 'Department Officer',
+    };
+
     final Map<String, dynamic> updates = {
       'status': status,
-      'updatedAt': Timestamp.now(),
+      'updatedAt': now,
+      'timeline': FieldValue.arrayUnion([timelineEntry]),
     };
     if (remarks != null) updates['remarks'] = remarks;
     if (processedBy != null) updates['processedBy'] = processedBy;
     await _applicationsCollection.doc(applicationId).update(updates);
+  }
+
+  /// Request additional documents from citizen
+  Future<void> requestDocuments(
+    String applicationId, {
+    required String remarks,
+    required String processedBy,
+  }) async {
+    await updateApplicationStatus(
+      applicationId,
+      status: ApplicationModel.statusDocumentsRequired,
+      remarks: remarks,
+      processedBy: processedBy,
+    );
+  }
+
+  /// Approve citizen application
+  Future<void> approveApplication(
+    String applicationId, {
+    String remarks = 'Application approved after document verification.',
+    required String processedBy,
+  }) async {
+    await updateApplicationStatus(
+      applicationId,
+      status: ApplicationModel.statusApproved,
+      remarks: remarks,
+      processedBy: processedBy,
+    );
+  }
+
+  /// Reject citizen application
+  Future<void> rejectApplication(
+    String applicationId, {
+    required String remarks,
+    required String processedBy,
+  }) async {
+    await updateApplicationStatus(
+      applicationId,
+      status: ApplicationModel.statusRejected,
+      remarks: remarks,
+      processedBy: processedBy,
+    );
   }
 
   /// Delete an application

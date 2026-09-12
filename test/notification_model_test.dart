@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uni_gov_portal/models/notification_model.dart';
+import 'package:citizen_connect/models/notification_model.dart';
 
 void main() {
   group('NotificationModel Tests', () {

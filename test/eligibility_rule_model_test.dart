@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:uni_gov_portal/models/eligibility_rule_model.dart';
+import 'package:citizen_connect/models/eligibility_rule_model.dart';
 
 void main() {
   group('EligibilityRuleModel Tests', () {

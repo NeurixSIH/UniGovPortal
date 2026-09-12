@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:uni_gov_portal/models/service_field_model.dart';
+import 'package:citizen_connect/models/service_field_model.dart';
 
 void main() {
   group('ServiceFieldModel Tests', () {

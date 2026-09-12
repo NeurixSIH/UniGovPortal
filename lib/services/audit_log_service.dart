@@ -23,6 +23,13 @@ class AuditLogService {
     required String action,
     Map<String, dynamic> dataChanged = const {},
     required String performedBy,
+    String sourceDepartment = '',
+    String targetDepartment = '',
+    String fieldChanged = '',
+    String oldValue = '',
+    String newValue = '',
+    String status = AuditLogModel.statusSuccess,
+    String category = AuditLogModel.categoryProfile,
   }) async {
     final log = AuditLogModel(
       logId: logId,
@@ -33,6 +40,50 @@ class AuditLogService {
       dataChanged: dataChanged,
       performedBy: performedBy,
       timestamp: Timestamp.now(),
+      sourceDepartment: sourceDepartment,
+      targetDepartment: targetDepartment,
+      fieldChanged: fieldChanged,
+      oldValue: oldValue,
+      newValue: newValue,
+      status: status,
+      category: category,
+    );
+    await addAuditLog(log);
+  }
+
+  /// Convenience method for Interoperability Hub live sync logging
+  Future<void> logSyncAction({
+    required String logId,
+    required String userId,
+    required String sourceDepartment,
+    required String targetDepartment,
+    required String fieldChanged,
+    required String oldValue,
+    required String newValue,
+    String status = AuditLogModel.statusSuccess,
+    String category = AuditLogModel.categoryProfile,
+    String performedBy = 'Interoperability Hub',
+  }) async {
+    final log = AuditLogModel(
+      logId: logId,
+      userId: userId,
+      departmentId: targetDepartment,
+      serviceId: 'SYNC_SERVICE',
+      action: AuditLogModel.actionLiveSync,
+      dataChanged: {
+        'field': fieldChanged,
+        'old': oldValue,
+        'new': newValue,
+      },
+      performedBy: performedBy,
+      timestamp: Timestamp.now(),
+      sourceDepartment: sourceDepartment,
+      targetDepartment: targetDepartment,
+      fieldChanged: fieldChanged,
+      oldValue: oldValue,
+      newValue: newValue,
+      status: status,
+      category: category,
     );
     await addAuditLog(log);
   }
@@ -61,9 +112,35 @@ class AuditLogService {
     return _auditLogsCollection
         .where('userId', isEqualTo: userId)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => AuditLogModel.fromFirestore(doc))
-            .toList());
+        .map((snapshot) {
+      final list = snapshot.docs
+          .map((doc) => AuditLogModel.fromFirestore(doc))
+          .toList();
+      list.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      return list;
+    });
+  }
+
+  /// Stream audit logs filtered by category and status
+  Stream<List<AuditLogModel>> streamFilteredAuditLogs({
+    String? userId,
+    String? category,
+    String? status,
+  }) {
+    return streamAllAuditLogs().map((logs) {
+      return logs.where((log) {
+        if (userId != null && userId.isNotEmpty && log.userId != userId) {
+          return false;
+        }
+        if (category != null && category != AuditLogModel.categoryAll && log.category != category) {
+          return false;
+        }
+        if (status != null && status != 'All' && log.status != status) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
   }
 
   /// Stream audit logs for a specific department

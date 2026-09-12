@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uni_gov_portal/models/department_model.dart';
-import 'package:uni_gov_portal/services/service_seed_data.dart';
+import 'package:citizen_connect/models/department_model.dart';
+import 'package:citizen_connect/services/service_seed_data.dart';
 
 void main() {
   group('DepartmentModel Tests', () {

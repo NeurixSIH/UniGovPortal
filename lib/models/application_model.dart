@@ -12,6 +12,7 @@ class ApplicationModel {
   final Timestamp submittedAt;
   final Timestamp updatedAt;
   final String processedBy;
+  final List<Map<String, dynamic>> timeline;
 
   const ApplicationModel({
     required this.applicationId,
@@ -25,16 +26,26 @@ class ApplicationModel {
     required this.submittedAt,
     required this.updatedAt,
     required this.processedBy,
+    this.timeline = const [],
   });
 
   // Status constants
   static const String statusSubmitted = 'submitted';
   static const String statusPending = 'pending';
   static const String statusUnderReview = 'under_review';
+  static const String statusDocumentsRequired = 'documents_required';
   static const String statusApproved = 'approved';
   static const String statusRejected = 'rejected';
+  static const String statusCompleted = 'completed';
 
   factory ApplicationModel.fromMap(Map<String, dynamic> map, {String? docId}) {
+    final rawTimeline = (map['timeline'] as List<dynamic>?)
+            ?.map((e) => e is Map<String, dynamic>
+                ? e
+                : (e is Map ? Map<String, dynamic>.from(e) : <String, dynamic>{}))
+            .toList() ??
+        [];
+
     return ApplicationModel(
       applicationId: map['applicationId'] ?? docId ?? '',
       userId: map['userId'] ?? '',
@@ -58,6 +69,7 @@ class ApplicationModel {
           ? map['updatedAt']
           : Timestamp.now(),
       processedBy: map['processedBy'] ?? '',
+      timeline: rawTimeline,
     );
   }
 
@@ -78,6 +90,7 @@ class ApplicationModel {
       'submittedAt': submittedAt,
       'updatedAt': updatedAt,
       'processedBy': processedBy,
+      'timeline': timeline,
     };
   }
 
@@ -93,6 +106,7 @@ class ApplicationModel {
     Timestamp? submittedAt,
     Timestamp? updatedAt,
     String? processedBy,
+    List<Map<String, dynamic>>? timeline,
   }) {
     return ApplicationModel(
       applicationId: applicationId ?? this.applicationId,
@@ -106,6 +120,7 @@ class ApplicationModel {
       submittedAt: submittedAt ?? this.submittedAt,
       updatedAt: updatedAt ?? this.updatedAt,
       processedBy: processedBy ?? this.processedBy,
+      timeline: timeline ?? this.timeline,
     );
   }
 }
